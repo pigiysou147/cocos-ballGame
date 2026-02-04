@@ -1,5 +1,6 @@
 import { _decorator, Component, Node, sys } from 'cc';
 import { CharacterConfig, CharacterInstance, CharacterDatabase, CharacterRarity, ElementType, CharacterStats } from './CharacterData';
+import { EquipmentManager } from './EquipmentManager';
 const { ccclass, property } = _decorator;
 
 /**
@@ -291,16 +292,31 @@ export class CharacterManager extends Component {
     }
 
     /**
-     * 获取角色计算后的属性
+     * 获取角色计算后的属性（包含装备加成）
      */
-    public getCharacterStats(uniqueId: string): CharacterStats | null {
+    public getCharacterStats(uniqueId: string, includeEquipment: boolean = true): CharacterStats | null {
         const instance = this._ownedCharacters.get(uniqueId);
         if (!instance) return null;
 
         const config = CharacterDatabase.instance.getCharacter(instance.configId);
         if (!config) return null;
 
-        return CharacterDatabase.instance.calculateStats(config, instance.level, instance.star);
+        // 基础属性
+        let stats = CharacterDatabase.instance.calculateStats(config, instance.level, instance.star);
+
+        // 应用装备加成
+        if (includeEquipment && EquipmentManager.instance) {
+            stats = EquipmentManager.instance.applyEquipmentToStats(stats, uniqueId);
+        }
+
+        return stats;
+    }
+
+    /**
+     * 获取角色基础属性（不包含装备）
+     */
+    public getCharacterBaseStats(uniqueId: string): CharacterStats | null {
+        return this.getCharacterStats(uniqueId, false);
     }
 
     /**

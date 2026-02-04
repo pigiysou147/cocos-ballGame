@@ -60,3 +60,22 @@ export type { MaterialData, MaterialInventory } from './CharacterUpgrade';
 
 // 队伍战斗系统
 export { TeamBattle } from './TeamBattle';
+
+// 装备系统（独立装备池）
+export {
+    EquipmentDatabase,
+    EquipmentType,
+    EquipmentRarity,
+    EquipmentStatType
+} from './EquipmentData';
+export type {
+    EquipmentConfig,
+    EquipmentInstance,
+    EquipmentStat,
+    EquipmentSet,
+    SetBonus,
+    EquipmentSpecialEffect
+} from './EquipmentData';
+
+export { EquipmentManager } from './EquipmentManager';
+export type { EnhanceResult, ActiveSetInfo } from './EquipmentManager';
