@@ -158,3 +158,11 @@ export type {
 } from './MonsterData';
 
 export { MonsterAI, AIState } from './MonsterAI';
+
+// 元素系统
+export { ElementSystem, ElementReactionType } from './ElementSystem';
+export type {
+    ElementRelation,
+    ElementReaction,
+    ElementAura
+} from './ElementSystem';
