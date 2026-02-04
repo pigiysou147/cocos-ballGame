@@ -79,3 +79,6 @@ export type {
 
 export { EquipmentManager } from './EquipmentManager';
 export type { EnhanceResult, ActiveSetInfo } from './EquipmentManager';
+
+// UI绘制工具
+export { DoodleGraphics } from './DoodleGraphics';
