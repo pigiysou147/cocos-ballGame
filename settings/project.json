@@ -1,0 +1,18 @@
+{
+  "engine": "cocos-creator",
+  "version": "3.8.0",
+  "name": "world-flipper-clone",
+  "physics": {
+    "engine": "builtin",
+    "gravity": {
+      "x": 0,
+      "y": -500
+    }
+  },
+  "rendering": {
+    "renderMode": 0
+  },
+  "scripts": {
+    "start-scene": "assets/scenes/GameScene.scene"
+  }
+}
