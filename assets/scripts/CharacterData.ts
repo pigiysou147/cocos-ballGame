@@ -1,4 +1,5 @@
 import { _decorator } from 'cc';
+import { SkillDatabase, SkillConfig, SkillType } from './SkillData';
 
 /**
  * 角色稀有度枚举
@@ -50,21 +51,28 @@ export interface CharacterStats {
 }
 
 /**
- * 角色技能数据接口
+ * 角色技能槽位配置
+ * 角色通过技能ID引用技能池中的技能
  */
-export interface CharacterSkillData {
-    id: string;
-    name: string;
-    description: string;
-    cooldown: number;
-    energyCost: number;
-    damageMultiplier: number;
-    effectType: string;
-    effectValue: number;
+export interface CharacterSkillSlots {
+    // 默认技能ID（角色自带，不可更换）
+    defaultSkillId: string;
+    
+    // 队长技能ID（可选）
+    leaderSkillId?: string;
+    
+    // 被动技能ID列表（可选，最多3个）
+    passiveSkillIds?: string[];
+    
+    // 可装备的技能槽位数量
+    extraSkillSlots: number;
+    
+    // 可学习的技能ID列表（该角色可以学习的技能池）
+    learnableSkillIds: string[];
 }
 
 /**
- * 角色数据接口 - 静态配置数据
+ * 角色数据接口 - 静态配置数据（角色池）
  */
 export interface CharacterConfig {
     id: string;
@@ -81,9 +89,8 @@ export interface CharacterConfig {
     // 属性成长（每级增加）
     growthStats: CharacterStats;
     
-    // 技能配置
-    skill: CharacterSkillData;
-    leaderSkill?: CharacterSkillData;   // 队长技能
+    // 技能槽位配置（引用技能池）
+    skillSlots: CharacterSkillSlots;
     
     // 资源路径
     iconPath: string;
@@ -99,11 +106,23 @@ export interface CharacterConfig {
  */
 export interface CharacterInstance {
     uniqueId: string;           // 唯一实例ID
-    configId: string;           // 配置ID
+    configId: string;           // 配置ID（引用角色池）
     level: number;              // 等级
     exp: number;                // 经验值
     star: number;               // 星级（突破次数）
     awakening: number;          // 觉醒等级
+    
+    // 技能配置（引用技能池）
+    equippedSkills: {
+        activeSkillId: string;      // 当前装备的主动技能ID
+        passiveSkillIds: string[];  // 当前装备的被动技能ID列表
+    };
+    
+    // 技能等级（技能ID -> 等级）
+    skillLevels: { [skillId: string]: number };
+    
+    // 已学习的技能ID列表
+    learnedSkillIds: string[];
     
     // 装备槽位
     equipmentSlots: {
@@ -123,7 +142,7 @@ export interface CharacterInstance {
 }
 
 /**
- * 角色数据库 - 存储所有角色配置
+ * 角色数据库 - 独立的角色池
  */
 export class CharacterDatabase {
     private static _instance: CharacterDatabase | null = null;
@@ -168,25 +187,12 @@ export class CharacterDatabase {
                 critDamage: 0.02,
                 skillPower: 0.02
             },
-            skill: {
-                id: 'skill_fire_blade',
-                name: '烈焰斩',
-                description: '对所有敌人造成火属性伤害，并附加燃烧效果',
-                cooldown: 8,
-                energyCost: 100,
-                damageMultiplier: 3.5,
-                effectType: 'burn',
-                effectValue: 0.1
-            },
-            leaderSkill: {
-                id: 'leader_fire_atk',
-                name: '火焰之力',
-                description: '队伍中火属性角色攻击力+30%',
-                cooldown: 0,
-                energyCost: 0,
-                damageMultiplier: 0,
-                effectType: 'atk_boost_fire',
-                effectValue: 0.3
+            skillSlots: {
+                defaultSkillId: 'skill_fire_blade',
+                leaderSkillId: 'leader_fire_atk',
+                passiveSkillIds: ['passive_crit_up'],
+                extraSkillSlots: 2,
+                learnableSkillIds: ['skill_fire_blade', 'skill_inferno', 'skill_power_strike']
             },
             iconPath: 'textures/characters/fire_001_icon',
             spritePath: 'textures/characters/fire_001_sprite',
@@ -220,15 +226,12 @@ export class CharacterDatabase {
                 critDamage: 0.025,
                 skillPower: 0.03
             },
-            skill: {
-                id: 'skill_meteor',
-                name: '陨石冲击',
-                description: '召唤巨大陨石轰击敌人，造成大范围伤害',
-                cooldown: 12,
-                energyCost: 100,
-                damageMultiplier: 5.0,
-                effectType: 'aoe',
-                effectValue: 1.0
+            skillSlots: {
+                defaultSkillId: 'skill_meteor',
+                leaderSkillId: undefined,
+                passiveSkillIds: [],
+                extraSkillSlots: 2,
+                learnableSkillIds: ['skill_meteor', 'skill_inferno', 'skill_fire_blade']
             },
             iconPath: 'textures/characters/fire_002_icon',
             spritePath: 'textures/characters/fire_002_sprite',
@@ -263,25 +266,12 @@ export class CharacterDatabase {
                 critDamage: 0.015,
                 skillPower: 0.035
             },
-            skill: {
-                id: 'skill_heal_wave',
-                name: '治愈波涛',
-                description: '恢复队伍所有角色的生命值',
-                cooldown: 10,
-                energyCost: 100,
-                damageMultiplier: 0,
-                effectType: 'heal',
-                effectValue: 0.3
-            },
-            leaderSkill: {
-                id: 'leader_water_hp',
-                name: '海洋庇护',
-                description: '队伍中水属性角色生命值+35%',
-                cooldown: 0,
-                energyCost: 0,
-                damageMultiplier: 0,
-                effectType: 'hp_boost_water',
-                effectValue: 0.35
+            skillSlots: {
+                defaultSkillId: 'skill_heal_wave',
+                leaderSkillId: 'leader_water_hp',
+                passiveSkillIds: [],
+                extraSkillSlots: 2,
+                learnableSkillIds: ['skill_heal_wave', 'skill_tidal_wave', 'skill_divine_blessing']
             },
             iconPath: 'textures/characters/water_001_icon',
             spritePath: 'textures/characters/water_001_sprite',
@@ -315,15 +305,12 @@ export class CharacterDatabase {
                 critDamage: 0.01,
                 skillPower: 0.015
             },
-            skill: {
-                id: 'skill_ice_shield',
-                name: '冰霜护盾',
-                description: '为自己生成护盾并冻结周围敌人',
-                cooldown: 8,
-                energyCost: 80,
-                damageMultiplier: 1.5,
-                effectType: 'shield',
-                effectValue: 0.2
+            skillSlots: {
+                defaultSkillId: 'skill_ice_shield',
+                leaderSkillId: undefined,
+                passiveSkillIds: ['passive_shield'],
+                extraSkillSlots: 1,
+                learnableSkillIds: ['skill_ice_shield', 'skill_tidal_wave']
             },
             iconPath: 'textures/characters/water_002_icon',
             spritePath: 'textures/characters/water_002_sprite',
@@ -358,25 +345,12 @@ export class CharacterDatabase {
                 critDamage: 0.03,
                 skillPower: 0.025
             },
-            skill: {
-                id: 'skill_wind_slash',
-                name: '暴风乱舞',
-                description: '对单体敌人进行多次高速攻击',
-                cooldown: 6,
-                energyCost: 80,
-                damageMultiplier: 4.0,
-                effectType: 'multi_hit',
-                effectValue: 5
-            },
-            leaderSkill: {
-                id: 'leader_wind_speed',
-                name: '疾风迅雷',
-                description: '队伍中风属性角色速度+40%',
-                cooldown: 0,
-                energyCost: 0,
-                damageMultiplier: 0,
-                effectType: 'speed_boost_wind',
-                effectValue: 0.4
+            skillSlots: {
+                defaultSkillId: 'skill_wind_slash',
+                leaderSkillId: 'leader_wind_speed',
+                passiveSkillIds: ['passive_crit_up'],
+                extraSkillSlots: 2,
+                learnableSkillIds: ['skill_wind_slash', 'skill_speed_boost', 'skill_life_drain']
             },
             iconPath: 'textures/characters/wind_001_icon',
             spritePath: 'textures/characters/wind_001_sprite',
@@ -410,15 +384,12 @@ export class CharacterDatabase {
                 critDamage: 0.02,
                 skillPower: 0.02
             },
-            skill: {
-                id: 'skill_piercing_arrow',
-                name: '贯穿射击',
-                description: '射出穿透敌人的箭矢，可命中多个目标',
-                cooldown: 7,
-                energyCost: 70,
-                damageMultiplier: 2.5,
-                effectType: 'pierce',
-                effectValue: 3
+            skillSlots: {
+                defaultSkillId: 'skill_piercing_arrow',
+                leaderSkillId: undefined,
+                passiveSkillIds: [],
+                extraSkillSlots: 1,
+                learnableSkillIds: ['skill_piercing_arrow', 'skill_wind_slash']
             },
             iconPath: 'textures/characters/wind_002_icon',
             spritePath: 'textures/characters/wind_002_sprite',
@@ -453,25 +424,12 @@ export class CharacterDatabase {
                 critDamage: 0.025,
                 skillPower: 0.03
             },
-            skill: {
-                id: 'skill_thunder_god',
-                name: '雷神降临',
-                description: '召唤天雷轰击所有敌人，有概率麻痹',
-                cooldown: 10,
-                energyCost: 100,
-                damageMultiplier: 4.5,
-                effectType: 'paralyze',
-                effectValue: 0.3
-            },
-            leaderSkill: {
-                id: 'leader_thunder_crit',
-                name: '雷霆之怒',
-                description: '队伍所有角色暴击伤害+50%',
-                cooldown: 0,
-                energyCost: 0,
-                damageMultiplier: 0,
-                effectType: 'crit_damage_boost',
-                effectValue: 0.5
+            skillSlots: {
+                defaultSkillId: 'skill_thunder_god',
+                leaderSkillId: 'leader_thunder_crit',
+                passiveSkillIds: ['passive_crit_up'],
+                extraSkillSlots: 3,
+                learnableSkillIds: ['skill_thunder_god', 'skill_chain_lightning', 'skill_power_strike']
             },
             iconPath: 'textures/characters/thunder_001_icon',
             spritePath: 'textures/characters/thunder_001_sprite',
@@ -506,25 +464,12 @@ export class CharacterDatabase {
                 critDamage: 0.02,
                 skillPower: 0.032
             },
-            skill: {
-                id: 'skill_holy_light',
-                name: '圣光审判',
-                description: '释放圣光净化敌人，并为队友提供增益',
-                cooldown: 9,
-                energyCost: 90,
-                damageMultiplier: 3.0,
-                effectType: 'buff_all',
-                effectValue: 0.2
-            },
-            leaderSkill: {
-                id: 'leader_light_def',
-                name: '圣光护佑',
-                description: '队伍所有角色防御力+25%',
-                cooldown: 0,
-                energyCost: 0,
-                damageMultiplier: 0,
-                effectType: 'def_boost',
-                effectValue: 0.25
+            skillSlots: {
+                defaultSkillId: 'skill_holy_light',
+                leaderSkillId: 'leader_light_def',
+                passiveSkillIds: [],
+                extraSkillSlots: 2,
+                learnableSkillIds: ['skill_holy_light', 'skill_divine_blessing', 'skill_heal_wave']
             },
             iconPath: 'textures/characters/light_001_icon',
             spritePath: 'textures/characters/light_001_sprite',
@@ -559,25 +504,12 @@ export class CharacterDatabase {
                 critDamage: 0.03,
                 skillPower: 0.035
             },
-            skill: {
-                id: 'skill_dark_void',
-                name: '虚空吞噬',
-                description: '创造黑洞吞噬敌人，造成持续伤害',
-                cooldown: 12,
-                energyCost: 100,
-                damageMultiplier: 5.5,
-                effectType: 'dot',
-                effectValue: 0.15
-            },
-            leaderSkill: {
-                id: 'leader_dark_power',
-                name: '黑暗支配',
-                description: '队伍所有角色技能伤害+40%',
-                cooldown: 0,
-                energyCost: 0,
-                damageMultiplier: 0,
-                effectType: 'skill_boost',
-                effectValue: 0.4
+            skillSlots: {
+                defaultSkillId: 'skill_dark_void',
+                leaderSkillId: 'leader_dark_power',
+                passiveSkillIds: ['passive_lifesteal'],
+                extraSkillSlots: 3,
+                learnableSkillIds: ['skill_dark_void', 'skill_life_drain', 'skill_curse']
             },
             iconPath: 'textures/characters/dark_001_icon',
             spritePath: 'textures/characters/dark_001_sprite',
@@ -612,15 +544,12 @@ export class CharacterDatabase {
                 critDamage: 0.015,
                 skillPower: 0.02
             },
-            skill: {
-                id: 'skill_basic_slash',
-                name: '基础斩击',
-                description: '对敌人进行一次斩击',
-                cooldown: 5,
-                energyCost: 60,
-                damageMultiplier: 2.0,
-                effectType: 'damage',
-                effectValue: 0
+            skillSlots: {
+                defaultSkillId: 'skill_basic_slash',
+                leaderSkillId: 'leader_all_atk',
+                passiveSkillIds: [],
+                extraSkillSlots: 1,
+                learnableSkillIds: ['skill_basic_slash', 'skill_power_strike']
             },
             iconPath: 'textures/characters/starter_001_icon',
             spritePath: 'textures/characters/starter_001_sprite',
@@ -698,6 +627,41 @@ export class CharacterDatabase {
     }
 
     /**
+     * 获取角色的技能配置
+     */
+    public getCharacterSkills(configId: string): {
+        defaultSkill: SkillConfig | undefined;
+        leaderSkill: SkillConfig | undefined;
+        passiveSkills: SkillConfig[];
+        learnableSkills: SkillConfig[];
+    } {
+        const config = this._characters.get(configId);
+        if (!config) {
+            return {
+                defaultSkill: undefined,
+                leaderSkill: undefined,
+                passiveSkills: [],
+                learnableSkills: []
+            };
+        }
+
+        const skillDb = SkillDatabase.instance;
+        
+        return {
+            defaultSkill: skillDb.getSkill(config.skillSlots.defaultSkillId),
+            leaderSkill: config.skillSlots.leaderSkillId 
+                ? skillDb.getSkill(config.skillSlots.leaderSkillId) 
+                : undefined,
+            passiveSkills: (config.skillSlots.passiveSkillIds || [])
+                .map(id => skillDb.getSkill(id))
+                .filter((s): s is SkillConfig => s !== undefined),
+            learnableSkills: config.skillSlots.learnableSkillIds
+                .map(id => skillDb.getSkill(id))
+                .filter((s): s is SkillConfig => s !== undefined)
+        };
+    }
+
+    /**
      * 获取稀有度颜色
      */
     public getRarityColor(rarity: CharacterRarity): string {
@@ -753,5 +717,34 @@ export class CharacterDatabase {
             case ElementType.DARK: return '暗';
             default: return '?';
         }
+    }
+
+    /**
+     * 创建角色实例的默认数据
+     */
+    public createDefaultInstance(configId: string, uniqueId: string): CharacterInstance | null {
+        const config = this._characters.get(configId);
+        if (!config) return null;
+
+        return {
+            uniqueId: uniqueId,
+            configId: configId,
+            level: 1,
+            exp: 0,
+            star: 0,
+            awakening: 0,
+            equippedSkills: {
+                activeSkillId: config.skillSlots.defaultSkillId,
+                passiveSkillIds: [...(config.skillSlots.passiveSkillIds || [])]
+            },
+            skillLevels: {
+                [config.skillSlots.defaultSkillId]: 1
+            },
+            learnedSkillIds: [config.skillSlots.defaultSkillId],
+            equipmentSlots: {},
+            affinity: 0,
+            obtainedAt: Date.now(),
+            isLocked: false
+        };
     }
 }

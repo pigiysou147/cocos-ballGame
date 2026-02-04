@@ -116,24 +116,125 @@ export class CharacterManager extends Component {
             return null;
         }
 
-        const instance: CharacterInstance = {
-            uniqueId: this.generateUniqueId(),
-            configId: configId,
-            level: 1,
-            exp: 0,
-            star: 0,
-            awakening: 0,
-            equipmentSlots: {},
-            affinity: 0,
-            obtainedAt: Date.now(),
-            isLocked: false
-        };
+        // 使用CharacterDatabase创建默认实例
+        const instance = CharacterDatabase.instance.createDefaultInstance(
+            configId, 
+            this.generateUniqueId()
+        );
+
+        if (!instance) {
+            console.error(`创建角色实例失败: ${configId}`);
+            return null;
+        }
 
         this._ownedCharacters.set(instance.uniqueId, instance);
         console.log(`获得角色: ${config.name}`);
         
         this.saveData();
         return instance;
+    }
+
+    /**
+     * 为角色装备技能
+     */
+    public equipSkill(uniqueId: string, skillId: string): boolean {
+        const instance = this._ownedCharacters.get(uniqueId);
+        if (!instance) return false;
+
+        const config = CharacterDatabase.instance.getCharacter(instance.configId);
+        if (!config) return false;
+
+        // 检查技能是否可学习
+        if (!config.skillSlots.learnableSkillIds.includes(skillId) && 
+            skillId !== config.skillSlots.defaultSkillId) {
+            console.log('该角色无法学习此技能');
+            return false;
+        }
+
+        // 检查是否已学习
+        if (!instance.learnedSkillIds.includes(skillId)) {
+            console.log('技能尚未学习');
+            return false;
+        }
+
+        instance.equippedSkills.activeSkillId = skillId;
+        this.saveData();
+        console.log(`装备技能: ${skillId}`);
+        return true;
+    }
+
+    /**
+     * 学习技能
+     */
+    public learnSkill(uniqueId: string, skillId: string): boolean {
+        const instance = this._ownedCharacters.get(uniqueId);
+        if (!instance) return false;
+
+        const config = CharacterDatabase.instance.getCharacter(instance.configId);
+        if (!config) return false;
+
+        // 检查技能是否可学习
+        if (!config.skillSlots.learnableSkillIds.includes(skillId)) {
+            console.log('该角色无法学习此技能');
+            return false;
+        }
+
+        // 检查是否已学习
+        if (instance.learnedSkillIds.includes(skillId)) {
+            console.log('技能已学习');
+            return false;
+        }
+
+        instance.learnedSkillIds.push(skillId);
+        instance.skillLevels[skillId] = 1;
+        this.saveData();
+        console.log(`学习技能: ${skillId}`);
+        return true;
+    }
+
+    /**
+     * 升级技能
+     */
+    public upgradeSkill(uniqueId: string, skillId: string): boolean {
+        const instance = this._ownedCharacters.get(uniqueId);
+        if (!instance) return false;
+
+        // 检查是否已学习
+        if (!instance.learnedSkillIds.includes(skillId)) {
+            console.log('技能尚未学习');
+            return false;
+        }
+
+        const currentLevel = instance.skillLevels[skillId] || 1;
+        const maxSkillLevel = 10;
+
+        if (currentLevel >= maxSkillLevel) {
+            console.log('技能已达最大等级');
+            return false;
+        }
+
+        instance.skillLevels[skillId] = currentLevel + 1;
+        this.saveData();
+        console.log(`技能升级: ${skillId} -> Lv.${currentLevel + 1}`);
+        return true;
+    }
+
+    /**
+     * 获取角色当前装备的技能ID
+     */
+    public getEquippedSkillId(uniqueId: string): string | null {
+        const instance = this._ownedCharacters.get(uniqueId);
+        if (!instance) return null;
+        return instance.equippedSkills.activeSkillId;
+    }
+
+    /**
+     * 获取角色技能等级
+     */
+    public getSkillLevel(uniqueId: string, skillId: string): number {
+        const instance = this._ownedCharacters.get(uniqueId);
+        if (!instance) return 0;
+        return instance.skillLevels[skillId] || 0;
     }
 
     /**

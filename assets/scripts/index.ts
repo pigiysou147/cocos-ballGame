@@ -26,7 +26,20 @@ export { DeadZone } from './DeadZone';
 export { SceneSetup } from './SceneSetup';
 export { GameUI } from './GameUI';
 
-// 角色系统
+// 技能系统（独立技能池）
+export {
+    SkillDatabase,
+    SkillType,
+    SkillTargetType,
+    SkillEffectType
+} from './SkillData';
+export type {
+    SkillConfig,
+    SkillEffect,
+    SkillInstance
+} from './SkillData';
+
+// 角色系统（独立角色池，通过ID引用技能池）
 export { 
     CharacterDatabase, 
     CharacterRarity, 
@@ -36,8 +49,8 @@ export {
 export type { 
     CharacterConfig, 
     CharacterInstance, 
-    CharacterStats, 
-    CharacterSkillData 
+    CharacterStats,
+    CharacterSkillSlots
 } from './CharacterData';
 
 export { CharacterManager, TeamData } from './CharacterManager';

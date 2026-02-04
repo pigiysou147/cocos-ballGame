@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, Vec2, Vec3, RigidBody2D, CircleCollider2D, Collider2D, Contact2DType, IPhysics2DContact, ERigidBody2DType, Graphics, Color, UITransform, Label, tween, Sprite } from 'cc';
 import { CharacterManager } from './CharacterManager';
 import { CharacterDatabase, CharacterConfig, CharacterInstance, CharacterStats, ElementType } from './CharacterData';
+import { SkillDatabase, SkillConfig, SkillType, SkillEffectType } from './SkillData';
 import { GameManager } from './GameManager';
 import { Enemy } from './Enemy';
 const { ccclass, property } = _decorator;
@@ -38,6 +39,9 @@ export class TeamBattle extends Component {
         stats: CharacterStats;
         currentHP: number;
         skillEnergy: number;
+        activeSkill: SkillConfig | null;
+        leaderSkill: SkillConfig | null;
+        passiveSkills: SkillConfig[];
     }> = [];
 
     // 当前队长索引
@@ -121,13 +125,27 @@ export class TeamBattle extends Component {
             const charNode = this.createCharacterNode(config, stats, slotIndex);
             this._characterNodes.push(charNode);
 
+            // 获取角色技能（从技能池引用）
+            const skillDb = SkillDatabase.instance;
+            const activeSkillId = instance.equippedSkills.activeSkillId;
+            const activeSkill = skillDb.getSkill(activeSkillId) || null;
+            const leaderSkill = config.skillSlots.leaderSkillId 
+                ? skillDb.getSkill(config.skillSlots.leaderSkillId) || null 
+                : null;
+            const passiveSkills = instance.equippedSkills.passiveSkillIds
+                .map(id => skillDb.getSkill(id))
+                .filter((s): s is SkillConfig => s !== undefined);
+
             // 存储角色数据
             this._characterData.push({
                 instance,
                 config,
                 stats,
                 currentHP: stats.hp,
-                skillEnergy: 0
+                skillEnergy: 0,
+                activeSkill,
+                leaderSkill,
+                passiveSkills
             });
 
             // 初始化技能冷却
@@ -465,7 +483,8 @@ export class TeamBattle extends Component {
             const data = this._characterData[i];
             if (data.currentHP <= 0) continue;
             if (this._skillCooldowns[i] > 0) continue;
-            if (data.skillEnergy < data.config.skill.energyCost) continue;
+            if (!data.activeSkill) continue;
+            if (data.skillEnergy < data.activeSkill.baseEnergyCost) continue;
 
             // 使用技能
             this.executeSkill(i);
@@ -480,33 +499,111 @@ export class TeamBattle extends Component {
      */
     private executeSkill(characterIndex: number): void {
         const data = this._characterData[characterIndex];
-        const skill = data.config.skill;
+        const skill = data.activeSkill;
+
+        if (!skill) {
+            console.log(`${data.config.name} 没有装备技能`);
+            return;
+        }
 
         console.log(`${data.config.name} 使用技能: ${skill.name}`);
 
         this._isUsingSkill = true;
         data.skillEnergy = 0;
-        this._skillCooldowns[characterIndex] = skill.cooldown;
+        
+        // 计算技能冷却（考虑技能等级）
+        const skillLevel = data.instance.skillLevels[skill.id] || 1;
+        const cooldown = Math.max(1, skill.baseCooldown - skill.cooldownReduction * (skillLevel - 1));
+        this._skillCooldowns[characterIndex] = cooldown;
 
         // 技能特效
         this.playSkillEffect(characterIndex);
 
-        // 计算技能伤害
-        const baseDamage = data.stats.attack * skill.damageMultiplier * data.stats.skillPower;
+        // 计算技能伤害（考虑技能等级）
+        const damageMultiplier = skill.baseDamageMultiplier + skill.damageGrowth * (skillLevel - 1);
+        const baseDamage = data.stats.attack * damageMultiplier * data.stats.skillPower;
 
-        // 对所有敌人造成伤害
-        const enemies = GameManager.instance?.getEnemies() || [];
-        for (const enemyNode of enemies) {
-            const enemy = enemyNode.getComponent(Enemy);
-            if (enemy) {
-                enemy.takeDamage(baseDamage);
-            }
-        }
+        // 处理技能效果
+        this.applySkillEffects(skill, data, baseDamage);
 
         // 技能结束
         this.scheduleOnce(() => {
             this._isUsingSkill = false;
         }, 0.5);
+    }
+
+    /**
+     * 应用技能效果
+     */
+    private applySkillEffects(skill: SkillConfig, casterData: any, baseDamage: number): void {
+        const enemies = GameManager.instance?.getEnemies() || [];
+
+        for (const effect of skill.effects) {
+            switch (effect.type) {
+                case SkillEffectType.DAMAGE:
+                    // 伤害效果
+                    for (const enemyNode of enemies) {
+                        const enemy = enemyNode.getComponent(Enemy);
+                        if (enemy) {
+                            const damage = baseDamage * effect.value;
+                            enemy.takeDamage(damage);
+                        }
+                    }
+                    break;
+
+                case SkillEffectType.HEAL:
+                    // 治疗效果
+                    for (const data of this._characterData) {
+                        if (data.currentHP > 0) {
+                            const healAmount = data.stats.hp * effect.value;
+                            data.currentHP = Math.min(data.stats.hp, data.currentHP + healAmount);
+                            console.log(`${data.config.name} 恢复 ${healAmount.toFixed(0)} HP`);
+                        }
+                    }
+                    break;
+
+                case SkillEffectType.SHIELD:
+                    // 护盾效果（简化处理：临时增加当前HP上限的一定比例）
+                    const shieldAmount = casterData.stats.hp * effect.value;
+                    casterData.currentHP += shieldAmount;
+                    console.log(`获得 ${shieldAmount.toFixed(0)} 护盾`);
+                    break;
+
+                case SkillEffectType.DOT:
+                    // 持续伤害（简化处理：立即造成总伤害）
+                    const dotDamage = baseDamage * effect.value * (effect.duration || 1);
+                    for (const enemyNode of enemies) {
+                        const enemy = enemyNode.getComponent(Enemy);
+                        if (enemy) {
+                            enemy.takeDamage(dotDamage);
+                        }
+                    }
+                    break;
+
+                case SkillEffectType.MULTI_HIT:
+                    // 多段攻击
+                    const hitCount = Math.floor(effect.value);
+                    const damagePerHit = baseDamage / hitCount;
+                    for (const enemyNode of enemies) {
+                        const enemy = enemyNode.getComponent(Enemy);
+                        if (enemy) {
+                            for (let i = 0; i < hitCount; i++) {
+                                enemy.takeDamage(damagePerHit);
+                            }
+                        }
+                    }
+                    break;
+
+                case SkillEffectType.LIFESTEAL:
+                    // 生命偷取
+                    const stolenHP = baseDamage * effect.value;
+                    casterData.currentHP = Math.min(casterData.stats.hp, casterData.currentHP + stolenHP);
+                    console.log(`生命偷取: +${stolenHP.toFixed(0)} HP`);
+                    break;
+
+                // 其他效果类型可以继续扩展...
+            }
+        }
     }
 
     /**
@@ -705,10 +802,27 @@ export class TeamBattle extends Component {
 
         for (const data of this._characterData) {
             totalEnergy += data.skillEnergy;
-            totalMaxEnergy += data.config.skill.energyCost;
+            const maxEnergy = data.activeSkill?.baseEnergyCost || 100;
+            totalMaxEnergy += maxEnergy;
         }
 
         return totalMaxEnergy > 0 ? totalEnergy / totalMaxEnergy : 0;
+    }
+
+    /**
+     * 获取角色的主动技能
+     */
+    public getCharacterSkill(characterIndex: number): SkillConfig | null {
+        const data = this._characterData[characterIndex];
+        return data?.activeSkill || null;
+    }
+
+    /**
+     * 获取队长技能
+     */
+    public getLeaderSkillConfig(): SkillConfig | null {
+        const leaderData = this._characterData[this._leaderIndex];
+        return leaderData?.leaderSkill || null;
     }
 
     /**
