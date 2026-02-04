@@ -111,3 +111,26 @@ export type {
 
 export { LevelProgressManager } from './LevelProgressManager';
 export type { LevelResult } from './LevelProgressManager';
+
+// 领主战系统
+export {
+    BossRaidDatabase,
+    BossRaidDifficulty,
+    BossRaidStatus,
+    BossSkillType
+} from './BossRaidData';
+export type {
+    BossRaidConfig,
+    BossSkillConfig,
+    BossPhase,
+    BossDifficultyConfig,
+    BossRaidRecord,
+    BossRaidResult,
+    DamageRecord,
+    RankRewardConfig
+} from './BossRaidData';
+
+export { BossRaidManager } from './BossRaidManager';
+export type { BossRaidBattleState } from './BossRaidManager';
+
+export { BossRaidPanel } from './BossRaidPanel';
