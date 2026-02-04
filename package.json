@@ -1,0 +1,14 @@
+{
+  "name": "world-flipper-clone",
+  "version": "1.0.0",
+  "description": "A World Flipper (时间弹射物语) clone built with Cocos Creator 3.x",
+  "main": "index.js",
+  "scripts": {
+    "build": "cocos-creator build",
+    "preview": "cocos-creator preview"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}
