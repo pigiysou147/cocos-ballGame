@@ -4,6 +4,8 @@ import { CharacterDatabase, CharacterConfig, CharacterInstance, CharacterStats, 
 import { SkillDatabase, SkillConfig, SkillType, SkillEffectType } from './SkillData';
 import { GameManager } from './GameManager';
 import { Enemy } from './Enemy';
+import { DamageSystem, DamageType, DamageInfo } from './DamageSystem';
+import { ElementSystem, ElementAura } from './ElementSystem';
 const { ccclass, property } = _decorator;
 
 /**
@@ -380,55 +382,119 @@ export class TeamBattle extends Component {
      * 击中敌人
      */
     private onHitEnemy(enemy: Enemy): void {
+        const leaderNode = this._characterNodes[this._leaderIndex];
+        if (!leaderNode) return;
+
+        // 获取碰撞速度
+        const rigidBody = leaderNode.getComponent(RigidBody2D);
+        const speed = rigidBody?.linearVelocity.length() || this.minSpeed;
+
         // 计算所有角色的总伤害
         let totalDamage = 0;
+        let mainAttackerElement = ElementType.FIRE;
+        let hadCritical = false;
+        let hadAdvantage = false;
+        let hadDisadvantage = false;
 
         for (let i = 0; i < this._characterData.length; i++) {
             const data = this._characterData[i];
             if (data.currentHP <= 0) continue;
 
-            // 基础伤害
-            let damage = data.stats.attack;
+            // 获取敌人元素（如果有）
+            const enemyElement = enemy.element || ElementType.FIRE;
+            const enemyLevel = enemy.level || 1;
+            const enemyDefense = enemy.defense || 10;
 
-            // 暴击计算
-            if (Math.random() < data.stats.critRate) {
-                damage *= data.stats.critDamage;
-                console.log(`${data.config.name} 暴击!`);
+            // 使用伤害系统计算
+            if (DamageSystem.instance) {
+                const result = DamageSystem.instance.calculateCollisionDamage(
+                    data.stats.attack,
+                    speed,
+                    this.maxSpeed,
+                    data.config.element,
+                    data.instance.level,
+                    data.stats.critRate,
+                    data.stats.critDamage,
+                    enemyElement,
+                    enemyLevel,
+                    enemyDefense,
+                    enemy.elementAura
+                );
+
+                // 队长技能加成
+                const leaderBonus = this.getLeaderSkillBonus(i);
+                const finalDamage = result.finalDamage * leaderBonus;
+
+                totalDamage += finalDamage;
+
+                // 记录状态
+                if (i === 0) mainAttackerElement = data.config.element;
+                if (result.isCritical) hadCritical = true;
+                if (result.isAdvantage) hadAdvantage = true;
+                if (result.isDisadvantage) hadDisadvantage = true;
+
+                // 更新敌人元素附着
+                if (enemy.elementAura !== undefined) {
+                    enemy.elementAura = ElementSystem.instance.applyElementAura(
+                        enemy.elementAura,
+                        data.config.element,
+                        30,
+                        5,
+                        data.instance.uniqueId
+                    );
+                }
+            } else {
+                // 降级处理：没有伤害系统时的简单计算
+                let damage = data.stats.attack;
+                
+                // 速度加成
+                const speedBonus = 1 + (speed / this.maxSpeed) * 0.5;
+                damage *= speedBonus;
+
+                // 暴击
+                if (Math.random() < data.stats.critRate) {
+                    damage *= data.stats.critDamage;
+                    hadCritical = true;
+                }
+
+                // 元素克制
+                const elementBonus = this.calculateElementBonus(data.config.element, enemy);
+                damage *= elementBonus;
+
+                // 队长加成
+                damage *= this.getLeaderSkillBonus(i);
+
+                totalDamage += damage;
+                if (i === 0) mainAttackerElement = data.config.element;
             }
-
-            // 元素克制
-            const elementBonus = this.calculateElementBonus(data.config.element, enemy);
-            damage *= elementBonus;
-
-            // 队长技能加成
-            damage *= this.getLeaderSkillBonus(i);
-
-            totalDamage += damage;
         }
 
+        // 对敌人造成伤害
         enemy.takeDamage(totalDamage);
-        console.log(`队伍造成 ${totalDamage.toFixed(1)} 总伤害`);
+
+        // 显示伤害特效
+        if (DamageSystem.instance) {
+            DamageSystem.instance.showDamageText(enemy.node.position, {
+                damage: totalDamage,
+                isCritical: hadCritical,
+                isAdvantage: hadAdvantage,
+                isDisadvantage: hadDisadvantage,
+                element: mainAttackerElement
+            });
+
+            DamageSystem.instance.showHitEffect(enemy.node.position, mainAttackerElement, hadCritical);
+        }
+
+        console.log(`队伍造成 ${totalDamage.toFixed(1)} 总伤害${hadCritical ? ' (暴击!)' : ''}${hadAdvantage ? ' (克制!)' : ''}`);
     }
 
     /**
      * 计算元素克制
      */
     private calculateElementBonus(attackerElement: ElementType, enemy: Enemy): number {
-        // 简单的元素克制系统
-        // 火克风, 风克雷, 雷克水, 水克火
-        // 光暗互克
-        const elementAdvantage: { [key: string]: string } = {
-            [ElementType.FIRE]: ElementType.WIND,
-            [ElementType.WIND]: ElementType.THUNDER,
-            [ElementType.THUNDER]: ElementType.WATER,
-            [ElementType.WATER]: ElementType.FIRE,
-            [ElementType.LIGHT]: ElementType.DARK,
-            [ElementType.DARK]: ElementType.LIGHT
-        };
-
-        // 这里假设敌人有一个element属性，实际需要在Enemy类中添加
-        // 暂时返回1.0（无加成）
-        return 1.0;
+        // 使用元素系统计算
+        const enemyElement = enemy.element || ElementType.FIRE;
+        return ElementSystem.instance.getDamageMultiplier(attackerElement, enemyElement);
     }
 
     /**

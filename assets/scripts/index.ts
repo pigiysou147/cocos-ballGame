@@ -166,3 +166,11 @@ export type {
     ElementReaction,
     ElementAura
 } from './ElementSystem';
+
+// 伤害系统
+export { DamageSystem, DamageType } from './DamageSystem';
+export type {
+    DamageInfo,
+    DamageResult,
+    DamageTextConfig
+} from './DamageSystem';
