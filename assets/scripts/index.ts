@@ -25,3 +25,25 @@ export { DeadZone } from './DeadZone';
 // 场景和UI
 export { SceneSetup } from './SceneSetup';
 export { GameUI } from './GameUI';
+
+// 角色系统
+export { 
+    CharacterDatabase, 
+    CharacterRarity, 
+    ElementType, 
+    CharacterClass 
+} from './CharacterData';
+export type { 
+    CharacterConfig, 
+    CharacterInstance, 
+    CharacterStats, 
+    CharacterSkillData 
+} from './CharacterData';
+
+export { CharacterManager, TeamData } from './CharacterManager';
+export { CharacterSelectUI } from './CharacterSelectUI';
+export { CharacterUpgrade, MaterialType } from './CharacterUpgrade';
+export type { MaterialData, MaterialInventory } from './CharacterUpgrade';
+
+// 队伍战斗系统
+export { TeamBattle } from './TeamBattle';
