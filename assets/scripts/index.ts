@@ -87,3 +87,27 @@ export { DoodleGraphics } from './DoodleGraphics';
 export { MainMenuUI } from './MainMenuUI';
 export { InventoryPanel } from './InventoryPanel';
 export { CharacterPanel } from './CharacterPanel';
+export { LevelSelectPanel } from './LevelSelectPanel';
+
+// 关卡系统
+export {
+    LevelDatabase,
+    LevelDifficulty,
+    LevelType,
+    RewardType
+} from './LevelData';
+export type {
+    LevelConfig,
+    ChapterConfig,
+    LevelProgress,
+    ChapterProgress,
+    RewardData,
+    LevelObjective,
+    StarReward,
+    EnemyWave,
+    EnemySpawnInfo,
+    ObstacleData
+} from './LevelData';
+
+export { LevelProgressManager } from './LevelProgressManager';
+export type { LevelResult } from './LevelProgressManager';
