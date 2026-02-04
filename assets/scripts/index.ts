@@ -82,3 +82,8 @@ export type { EnhanceResult, ActiveSetInfo } from './EquipmentManager';
 
 // UI绘制工具
 export { DoodleGraphics } from './DoodleGraphics';
+
+// UI面板
+export { MainMenuUI } from './MainMenuUI';
+export { InventoryPanel } from './InventoryPanel';
+export { CharacterPanel } from './CharacterPanel';
