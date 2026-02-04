@@ -134,3 +134,27 @@ export { BossRaidManager } from './BossRaidManager';
 export type { BossRaidBattleState } from './BossRaidManager';
 
 export { BossRaidPanel } from './BossRaidPanel';
+
+// 怪物系统
+export {
+    MonsterDatabase,
+    MonsterType,
+    MonsterRace,
+    MonsterSize,
+    AIBehaviorType,
+    MovementPattern,
+    AttackPattern
+} from './MonsterData';
+export type {
+    MonsterConfig,
+    MonsterInstance,
+    MonsterStats,
+    MonsterSkillConfig,
+    MonsterSkillEffect,
+    WeaknessConfig,
+    ResistanceConfig,
+    DropConfig,
+    ActiveEffect
+} from './MonsterData';
+
+export { MonsterAI, AIState } from './MonsterAI';
