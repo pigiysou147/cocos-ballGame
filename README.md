@@ -913,6 +913,25 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 成就统计 | ✅ | StatisticsSystem.ts |
 | 登录统计 | ✅ | StatisticsSystem.ts |
 
+#### VIP系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| VIP等级(0-7级) | ✅ | VIPSystem.ts |
+| 抽卡特权 | ✅ | VIPSystem.ts |
+| 体力特权 | ✅ | VIPSystem.ts |
+| 战斗加成 | ✅ | VIPSystem.ts |
+| 商店特权 | ✅ | VIPSystem.ts |
+| 功能解锁 | ✅ | VIPSystem.ts |
+
+#### 公告系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 多类型公告 | ✅ | AnnouncementSystem.ts |
+| 登录弹窗 | ✅ | AnnouncementSystem.ts |
+| 置顶和优先级 | ✅ | AnnouncementSystem.ts |
+| 已读标记 | ✅ | AnnouncementSystem.ts |
+| 有效期管理 | ✅ | AnnouncementSystem.ts |
+
 ### ⏳ 待实现功能
 
 | 功能 | 优先级 | 说明 |

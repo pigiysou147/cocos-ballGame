@@ -284,3 +284,19 @@ export type {
     LoginStatistics,
     AllStatistics
 } from './StatisticsSystem';
+
+// VIP系统
+export { VIPSystem } from './VIPSystem';
+export type {
+    VIPLevelConfig,
+    VIPPrivileges,
+    VIPData
+} from './VIPSystem';
+
+// 公告系统
+export { AnnouncementSystem, AnnouncementType, AnnouncementPriority } from './AnnouncementSystem';
+export type {
+    AnnouncementConfig,
+    AnnouncementReadRecord,
+    AnnouncementData
+} from './AnnouncementSystem';
