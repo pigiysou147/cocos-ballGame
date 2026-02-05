@@ -1,5 +1,7 @@
 import { _decorator, Component, Node, Vec2, Vec3, RigidBody2D, CircleCollider2D, BoxCollider2D, Collider2D, Contact2DType, ERigidBody2DType, Color, Sprite, UITransform } from 'cc';
 import { GameManager } from './GameManager';
+import { ElementType } from './CharacterData';
+import { ElementAura } from './ElementSystem';
 const { ccclass, property } = _decorator;
 
 /**
@@ -29,6 +31,15 @@ export class Enemy extends Component {
     @property({ tooltip: '攻击力' })
     public attack: number = 5;
 
+    @property({ tooltip: '防御力' })
+    public defense: number = 10;
+
+    @property({ tooltip: '等级' })
+    public level: number = 1;
+
+    @property({ tooltip: '元素类型' })
+    public element: ElementType = ElementType.FIRE;
+
     @property({ tooltip: '分数奖励' })
     public scoreReward: number = 100;
 
@@ -43,6 +54,9 @@ export class Enemy extends Component {
 
     @property({ tooltip: '反弹力度' })
     public bounceForce: number = 300;
+
+    // 元素附着状态
+    public elementAura: ElementAura | null = null;
 
     private _currentHP: number = 50;
     private _rigidBody: RigidBody2D | null = null;
