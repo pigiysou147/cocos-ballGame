@@ -175,3 +175,240 @@ export type {
     DamageResult,
     DamageTextConfig
 } from './DamageSystem';
+
+// 货币系统
+export { CurrencyManager, CurrencyType } from './CurrencyManager';
+export type {
+    CurrencyConfig,
+    CurrencyTransaction,
+    InsufficientCurrencyError
+} from './CurrencyManager';
+
+// 抽卡系统
+export { GachaSystem, GachaPoolType, SummonType } from './GachaSystem';
+export type {
+    GachaPoolConfig,
+    GachaRateConfig,
+    PityConfig,
+    GachaResult,
+    GachaHistory,
+    GachaStats
+} from './GachaSystem';
+
+// 商店系统
+export { ShopSystem, ShopType, ItemType } from './ShopSystem';
+export type {
+    ShopItemConfig,
+    GiftPackConfig,
+    PurchaseRecord
+} from './ShopSystem';
+
+// 成就系统
+export { AchievementSystem, AchievementCategory, AchievementTrigger } from './AchievementSystem';
+export type {
+    AchievementConfig,
+    AchievementProgress,
+    AchievementReward
+} from './AchievementSystem';
+
+// 每日任务系统
+export { DailyTaskSystem, TaskType, TaskTrigger } from './DailyTaskSystem';
+export type {
+    TaskConfig,
+    TaskProgress,
+    TaskReward,
+    ActivityRewardConfig,
+    SignInConfig
+} from './DailyTaskSystem';
+
+// 音频系统
+export { AudioManager, SFXType, BGMType } from './AudioManager';
+export type { AudioConfig } from './AudioManager';
+
+// 新手引导系统
+export { TutorialSystem, TutorialStepType, TutorialTrigger, DialogPosition } from './TutorialSystem';
+export type {
+    TutorialStep,
+    TutorialChapter,
+    TutorialProgress
+} from './TutorialSystem';
+
+// 设置面板
+export { SettingsPanel, QualityLevel, LanguageType } from './SettingsPanel';
+export type { SettingsData } from './SettingsPanel';
+
+// 抽卡动画
+export { GachaAnimation, GachaAnimationPhase } from './GachaAnimation';
+export type { GachaAnimationConfig } from './GachaAnimation';
+
+// 登录奖励系统
+export { LoginRewardSystem } from './LoginRewardSystem';
+export type {
+    RewardItem,
+    DailyLoginReward,
+    AccumulativeReward,
+    ReturnReward,
+    LoginData
+} from './LoginRewardSystem';
+
+// 活动系统
+export { EventSystem, EventType, EventStatus } from './EventSystem';
+export type {
+    EventReward,
+    EventTask,
+    GameEventConfig,
+    EventProgress,
+    ExchangeItem
+} from './EventSystem';
+
+// 邮箱系统
+export { MailSystem, MailType } from './MailSystem';
+export type {
+    MailAttachment,
+    MailConfig,
+    MailboxData
+} from './MailSystem';
+
+// 红点通知系统
+export { RedDotSystem, RedDotType } from './RedDotSystem';
+export type { RedDotState, RedDotConfig } from './RedDotSystem';
+
+// 数据统计系统
+export { StatisticsSystem } from './StatisticsSystem';
+export type {
+    BattleStatistics,
+    GachaStatistics,
+    CurrencyStatistics,
+    CharacterStatistics,
+    AchievementStatistics,
+    LoginStatistics,
+    AllStatistics
+} from './StatisticsSystem';
+
+// VIP系统
+export { VIPSystem } from './VIPSystem';
+export type {
+    VIPLevelConfig,
+    VIPPrivileges,
+    VIPData
+} from './VIPSystem';
+
+// 公告系统
+export { AnnouncementSystem, AnnouncementType, AnnouncementPriority } from './AnnouncementSystem';
+export type {
+    AnnouncementConfig,
+    AnnouncementReadRecord,
+    AnnouncementData
+} from './AnnouncementSystem';
+
+// 技能效果管理器
+export { SkillEffectManager, EffectSourceType } from './SkillEffectManager';
+export type {
+    EffectInstance,
+    EffectStats
+} from './SkillEffectManager';
+
+// 技能执行器
+export { SkillExecutor } from './SkillExecutor';
+export type {
+    SkillCastResult,
+    SkillTargetInfo,
+    SkillCastContext,
+    CooldownInfo
+} from './SkillExecutor';
+
+// 技能升级系统
+export { SkillUpgradeSystem } from './SkillUpgradeSystem';
+export type {
+    SkillUpgradeMaterial,
+    SkillUpgradeConfig,
+    CharacterSkillData,
+    SkillBookData
+} from './SkillUpgradeSystem';
+
+// 技能连携系统
+export { SkillComboSystem, ComboTriggerType } from './SkillComboSystem';
+export type {
+    ComboEffect,
+    SkillComboConfig,
+    ComboState,
+    ComboTriggerResult
+} from './SkillComboSystem';
+
+// 装备强化系统
+export { EquipmentEnhanceSystem } from './EquipmentEnhanceSystem';
+export type {
+    EnhanceResult,
+    DecomposeResult,
+    DecomposeMaterial,
+    ReforgeResult,
+    InheritResult,
+    EnhanceProtection
+} from './EquipmentEnhanceSystem';
+
+// 装备锻造系统
+export { EquipmentForgeSystem } from './EquipmentForgeSystem';
+export type {
+    ForgeRecipe,
+    ForgeMaterial,
+    BonusDrop,
+    ForgeResult,
+    SynthesisRecipe
+} from './EquipmentForgeSystem';
+
+// 宝石镶嵌系统
+export { EquipmentGemSystem, GemType, GemGrade } from './EquipmentGemSystem';
+export type {
+    GemConfig,
+    GemInstance,
+    EquipmentGemSlots,
+    SocketResult,
+    GemCombineResult
+} from './EquipmentGemSystem';
+
+// 角色好感度系统
+export { CharacterAffinitySystem, AffinityLevel, GiftType, InteractionType } from './CharacterAffinitySystem';
+export type {
+    GiftConfig,
+    AffinityLevelConfig,
+    AffinityReward,
+    AffinityStatBonus,
+    CharacterAffinityData,
+    InteractionResult
+} from './CharacterAffinitySystem';
+
+// 角色羁绊系统
+export { CharacterBondSystem, BondType } from './CharacterBondSystem';
+export type {
+    BondCondition,
+    BondEffect,
+    BondConfig,
+    BondLevel,
+    ActiveBond,
+    TeamBondStatus
+} from './CharacterBondSystem';
+
+// 角色天赋系统
+export { CharacterTalentSystem, TalentNodeType, TalentNodeStatus } from './CharacterTalentSystem';
+export type {
+    TalentNodeEffect,
+    TalentNodeConfig,
+    TalentTreeConfig,
+    CharacterTalentData,
+    TalentUnlockResult,
+    TalentResetResult
+} from './CharacterTalentSystem';
+
+// 角色图鉴系统
+export { CharacterCollectionSystem, CollectionStatus } from './CharacterCollectionSystem';
+export type {
+    CollectionEntry,
+    CollectionReward,
+    CollectionCondition,
+    CollectionRewardItem,
+    CollectionStatistics,
+    CharacterVoice,
+    VoiceUnlockCondition,
+    CharacterStory,
+    StoryUnlockCondition
+} from './CharacterCollectionSystem';
