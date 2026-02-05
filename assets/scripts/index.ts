@@ -268,3 +268,19 @@ export type {
     MailConfig,
     MailboxData
 } from './MailSystem';
+
+// 红点通知系统
+export { RedDotSystem, RedDotType } from './RedDotSystem';
+export type { RedDotState, RedDotConfig } from './RedDotSystem';
+
+// 数据统计系统
+export { StatisticsSystem } from './StatisticsSystem';
+export type {
+    BattleStatistics,
+    GachaStatistics,
+    CurrencyStatistics,
+    CharacterStatistics,
+    AchievementStatistics,
+    LoginStatistics,
+    AllStatistics
+} from './StatisticsSystem';

@@ -894,6 +894,25 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 系统邮件模板 | ✅ | MailSystem.ts |
 | 好友赠礼 | ✅ | MailSystem.ts |
 
+#### 红点通知系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 多类型红点管理 | ✅ | RedDotSystem.ts |
+| 父子红点关联 | ✅ | RedDotSystem.ts |
+| 红点数量追踪 | ✅ | RedDotSystem.ts |
+| NEW标识支持 | ✅ | RedDotSystem.ts |
+| 自定义检查函数 | ✅ | RedDotSystem.ts |
+
+#### 数据统计系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 战斗统计 | ✅ | StatisticsSystem.ts |
+| 抽卡统计 | ✅ | StatisticsSystem.ts |
+| 货币统计 | ✅ | StatisticsSystem.ts |
+| 角色使用统计 | ✅ | StatisticsSystem.ts |
+| 成就统计 | ✅ | StatisticsSystem.ts |
+| 登录统计 | ✅ | StatisticsSystem.ts |
+
 ### ⏳ 待实现功能
 
 | 功能 | 优先级 | 说明 |
