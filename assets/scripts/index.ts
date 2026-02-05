@@ -300,3 +300,37 @@ export type {
     AnnouncementReadRecord,
     AnnouncementData
 } from './AnnouncementSystem';
+
+// 技能效果管理器
+export { SkillEffectManager, EffectSourceType } from './SkillEffectManager';
+export type {
+    EffectInstance,
+    EffectStats
+} from './SkillEffectManager';
+
+// 技能执行器
+export { SkillExecutor } from './SkillExecutor';
+export type {
+    SkillCastResult,
+    SkillTargetInfo,
+    SkillCastContext,
+    CooldownInfo
+} from './SkillExecutor';
+
+// 技能升级系统
+export { SkillUpgradeSystem } from './SkillUpgradeSystem';
+export type {
+    SkillUpgradeMaterial,
+    SkillUpgradeConfig,
+    CharacterSkillData,
+    SkillBookData
+} from './SkillUpgradeSystem';
+
+// 技能连携系统
+export { SkillComboSystem, ComboTriggerType } from './SkillComboSystem';
+export type {
+    ComboEffect,
+    SkillComboConfig,
+    ComboState,
+    ComboTriggerResult
+} from './SkillComboSystem';

@@ -704,6 +704,13 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 队长技能 | ✅ | SkillData.ts |
 | 被动技能 | ✅ | SkillData.ts |
 | 技能效果 | ✅ | TeamBattle.ts |
+| Buff/Debuff管理 | ✅ | SkillEffectManager.ts |
+| 技能执行器 | ✅ | SkillExecutor.ts |
+| 技能升级系统 | ✅ | SkillUpgradeSystem.ts |
+| 技能连携系统 | ✅ | SkillComboSystem.ts |
+| 冷却管理 | ✅ | SkillExecutor.ts |
+| 能量管理 | ✅ | SkillExecutor.ts |
+| 技能书系统 | ✅ | SkillUpgradeSystem.ts |
 
 #### 装备系统
 | 功能 | 状态 | 文件 |
