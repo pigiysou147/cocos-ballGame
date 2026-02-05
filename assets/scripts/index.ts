@@ -183,3 +183,40 @@ export type {
     CurrencyTransaction,
     InsufficientCurrencyError
 } from './CurrencyManager';
+
+// 抽卡系统
+export { GachaSystem, GachaPoolType, SummonType } from './GachaSystem';
+export type {
+    GachaPoolConfig,
+    GachaRateConfig,
+    PityConfig,
+    GachaResult,
+    GachaHistory,
+    GachaStats
+} from './GachaSystem';
+
+// 商店系统
+export { ShopSystem, ShopType, ItemType } from './ShopSystem';
+export type {
+    ShopItemConfig,
+    GiftPackConfig,
+    PurchaseRecord
+} from './ShopSystem';
+
+// 成就系统
+export { AchievementSystem, AchievementCategory, AchievementTrigger } from './AchievementSystem';
+export type {
+    AchievementConfig,
+    AchievementProgress,
+    AchievementReward
+} from './AchievementSystem';
+
+// 每日任务系统
+export { DailyTaskSystem, TaskType, TaskTrigger } from './DailyTaskSystem';
+export type {
+    TaskConfig,
+    TaskProgress,
+    TaskReward,
+    ActivityRewardConfig,
+    SignInConfig
+} from './DailyTaskSystem';

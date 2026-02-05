@@ -787,6 +787,43 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 钻石购买货币 | ✅ | CurrencyManager.ts |
 | 交易记录 | ✅ | CurrencyManager.ts |
 
+#### 抽卡系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 卡池管理 | ✅ | GachaSystem.ts |
+| 概率配置 | ✅ | GachaSystem.ts |
+| 保底系统(软/硬保底) | ✅ | GachaSystem.ts |
+| UP角色机制 | ✅ | GachaSystem.ts |
+| 抽卡历史记录 | ✅ | GachaSystem.ts |
+| 多种卡池类型 | ✅ | GachaSystem.ts |
+
+#### 商店系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 多种商店类型 | ✅ | ShopSystem.ts |
+| 限购机制 | ✅ | ShopSystem.ts |
+| 每日/周/月重置 | ✅ | ShopSystem.ts |
+| 礼包配置 | ✅ | ShopSystem.ts |
+| 购买记录 | ✅ | ShopSystem.ts |
+
+#### 成就系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 成就配置 | ✅ | AchievementSystem.ts |
+| 多类别成就 | ✅ | AchievementSystem.ts |
+| 进度追踪 | ✅ | AchievementSystem.ts |
+| 奖励领取 | ✅ | AchievementSystem.ts |
+| 前置成就 | ✅ | AchievementSystem.ts |
+
+#### 每日任务系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 每日任务 | ✅ | DailyTaskSystem.ts |
+| 每周任务 | ✅ | DailyTaskSystem.ts |
+| 活跃度奖励 | ✅ | DailyTaskSystem.ts |
+| 签到系统 | ✅ | DailyTaskSystem.ts |
+| 自动重置 | ✅ | DailyTaskSystem.ts |
+
 ### ⏳ 待实现功能
 
 | 功能 | 优先级 | 说明 |
@@ -794,13 +831,13 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 多人协作模式 | 中 | 多人联机弹射 |
 | 音效系统 | 高 | 碰撞/技能/UI音效 |
 | 背景音乐 | 高 | 场景BGM |
-| 成就系统 | 低 | 成就解锁和奖励 |
-| 商店系统 | 中 | 道具购买 |
-| 抽卡系统 | 中 | 抽卡动画和保底 |
 | 公会系统 | 低 | 公会战和社交 |
 | 活动系统 | 低 | 限时活动关卡 |
 | 新手引导 | 高 | 教程流程 |
 | 设置面板 | 中 | 音量/画质设置 |
+| 抽卡动画 | 中 | 召唤演出效果 |
+| 剧情系统 | 低 | 主线/角色剧情 |
+| 图鉴系统 | 低 | 角色/怪物图鉴 |
 
 ### 🔧 技术债务
 
