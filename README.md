@@ -873,16 +873,37 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 回归玩家奖励 | ✅ | LoginRewardSystem.ts |
 | 里程碑奖励 | ✅ | LoginRewardSystem.ts |
 
+#### 活动系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 限时活动管理 | ✅ | EventSystem.ts |
+| 双倍掉落活动 | ✅ | EventSystem.ts |
+| 抽卡UP活动 | ✅ | EventSystem.ts |
+| 挑战任务活动 | ✅ | EventSystem.ts |
+| 收集兑换活动 | ✅ | EventSystem.ts |
+| 商店折扣活动 | ✅ | EventSystem.ts |
+| 活动进度保存 | ✅ | EventSystem.ts |
+
+#### 邮箱系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 邮件收发 | ✅ | MailSystem.ts |
+| 附件领取 | ✅ | MailSystem.ts |
+| 一键领取 | ✅ | MailSystem.ts |
+| 邮件过期 | ✅ | MailSystem.ts |
+| 系统邮件模板 | ✅ | MailSystem.ts |
+| 好友赠礼 | ✅ | MailSystem.ts |
+
 ### ⏳ 待实现功能
 
 | 功能 | 优先级 | 说明 |
 |------|--------|------|
 | 多人协作模式 | 低 | 多人联机弹射 |
 | 公会系统 | 低 | 公会战和社交 |
-| 活动系统 | 低 | 限时活动关卡 |
 | 剧情系统 | 低 | 主线/角色剧情 |
 | 图鉴系统 | 低 | 角色/怪物图鉴 |
-| 好友系统 | 低 | 好友助战 |
+| 好友系统 | 低 | 好友助战/赠礼 |
+| PVP竞技 | 低 | 玩家对战 |
 
 ### 🔧 技术债务
 

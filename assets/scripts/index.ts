@@ -250,3 +250,21 @@ export type {
     ReturnReward,
     LoginData
 } from './LoginRewardSystem';
+
+// 活动系统
+export { EventSystem, EventType, EventStatus } from './EventSystem';
+export type {
+    EventReward,
+    EventTask,
+    GameEventConfig,
+    EventProgress,
+    ExchangeItem
+} from './EventSystem';
+
+// 邮箱系统
+export { MailSystem, MailType } from './MailSystem';
+export type {
+    MailAttachment,
+    MailConfig,
+    MailboxData
+} from './MailSystem';
