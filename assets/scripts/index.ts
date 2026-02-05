@@ -232,3 +232,21 @@ export type {
     TutorialChapter,
     TutorialProgress
 } from './TutorialSystem';
+
+// 设置面板
+export { SettingsPanel, QualityLevel, LanguageType } from './SettingsPanel';
+export type { SettingsData } from './SettingsPanel';
+
+// 抽卡动画
+export { GachaAnimation, GachaAnimationPhase } from './GachaAnimation';
+export type { GachaAnimationConfig } from './GachaAnimation';
+
+// 登录奖励系统
+export { LoginRewardSystem } from './LoginRewardSystem';
+export type {
+    RewardItem,
+    DailyLoginReward,
+    AccumulativeReward,
+    ReturnReward,
+    LoginData
+} from './LoginRewardSystem';

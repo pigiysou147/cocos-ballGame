@@ -844,17 +844,45 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 引导进度保存 | ✅ | TutorialSystem.ts |
 | 跳过功能 | ✅ | TutorialSystem.ts |
 
+#### 设置系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 音频设置 | ✅ | SettingsPanel.ts |
+| 画面设置 | ✅ | SettingsPanel.ts |
+| 控制设置 | ✅ | SettingsPanel.ts |
+| 通知设置 | ✅ | SettingsPanel.ts |
+| 语言设置 | ✅ | SettingsPanel.ts |
+| 设置保存 | ✅ | SettingsPanel.ts |
+
+#### 抽卡动画
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 抽卡过程动画 | ✅ | GachaAnimation.ts |
+| 稀有度特效 | ✅ | GachaAnimation.ts |
+| 单个结果展示 | ✅ | GachaAnimation.ts |
+| 批量结果展示 | ✅ | GachaAnimation.ts |
+| 跳过功能 | ✅ | GachaAnimation.ts |
+| 粒子效果 | ✅ | GachaAnimation.ts |
+
+#### 登录奖励系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 每日登录奖励 | ✅ | LoginRewardSystem.ts |
+| 累计登录奖励 | ✅ | LoginRewardSystem.ts |
+| 连续登录追踪 | ✅ | LoginRewardSystem.ts |
+| 回归玩家奖励 | ✅ | LoginRewardSystem.ts |
+| 里程碑奖励 | ✅ | LoginRewardSystem.ts |
+
 ### ⏳ 待实现功能
 
 | 功能 | 优先级 | 说明 |
 |------|--------|------|
-| 多人协作模式 | 中 | 多人联机弹射 |
+| 多人协作模式 | 低 | 多人联机弹射 |
 | 公会系统 | 低 | 公会战和社交 |
 | 活动系统 | 低 | 限时活动关卡 |
-| 设置面板 | 中 | 音量/画质设置 |
-| 抽卡动画 | 中 | 召唤演出效果 |
 | 剧情系统 | 低 | 主线/角色剧情 |
 | 图鉴系统 | 低 | 角色/怪物图鉴 |
+| 好友系统 | 低 | 好友助战 |
 
 ### 🔧 技术债务
 
