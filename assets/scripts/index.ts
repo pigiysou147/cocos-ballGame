@@ -175,3 +175,11 @@ export type {
     DamageResult,
     DamageTextConfig
 } from './DamageSystem';
+
+// 货币系统
+export { CurrencyManager, CurrencyType } from './CurrencyManager';
+export type {
+    CurrencyConfig,
+    CurrencyTransaction,
+    InsufficientCurrencyError
+} from './CurrencyManager';
