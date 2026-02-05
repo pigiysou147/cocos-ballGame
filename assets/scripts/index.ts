@@ -220,3 +220,7 @@ export type {
     ActivityRewardConfig,
     SignInConfig
 } from './DailyTaskSystem';
+
+// 音频系统
+export { AudioManager, SFXType, BGMType } from './AudioManager';
+export type { AudioConfig } from './AudioManager';
