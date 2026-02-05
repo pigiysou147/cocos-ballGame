@@ -38,6 +38,10 @@ world-flipper-clone/
 │   │   ├── CharacterManager.ts # 角色管理器
 │   │   ├── CharacterSelectUI.ts # 角色选择界面
 │   │   ├── CharacterUpgrade.ts  # 角色升级养成
+│   │   ├── CharacterAffinitySystem.ts # 角色好感度系统
+│   │   ├── CharacterBondSystem.ts # 角色羁绊系统
+│   │   ├── CharacterTalentSystem.ts # 角色天赋系统
+│   │   ├── CharacterCollectionSystem.ts # 角色图鉴系统
 │   │   ├── TeamBattle.ts      # 队伍战斗系统
 │   │   ├── SkillData.ts       # 技能池数据定义
 │   │   ├── EquipmentData.ts   # 装备池数据定义
@@ -240,6 +244,44 @@ this._levelDatabase.set(newId, {
 - 等级升级（经验书消耗）
 - 星级突破（突破石消耗）
 - 觉醒系统（觉醒结晶消耗）
+
+### 角色好感度 (CharacterAffinitySystem)
+- **好感度等级**: 陌生人/认识/朋友/挚友/心灵伴侣/羁绊 六个等级
+- **互动系统**: 触摸、对话、送礼、一起战斗
+- **礼物系统**: 普通/食物/饰品/书籍/珍宝/元素结晶等20+种礼物
+- **偏好系统**: 不同元素角色对不同礼物有偏好
+- **奖励系统**: 每级解锁奖励（货币/道具/故事/技能/时装）
+- **属性加成**: 好感度等级提供属性加成
+- **每日互动限制**: 每天最多互动5次
+
+### 角色羁绊 (CharacterBondSystem)
+- **羁绊类型**: 元素/职业/阵营/剧情/组合羁绊
+- **多级羁绊**: 根据满足条件的角色数量激活不同等级
+- **羁绊效果**:
+  - 属性加成（HP/攻击/防御/速度/暴击等）
+  - 元素伤害加成
+  - 元素抗性加成
+  - 治疗/能量恢复加成
+  - 经验/金币获取加成
+- **预置羁绊**: 20+种羁绊配置
+- **队伍预览**: 实时预览队伍羁绊效果
+
+### 角色天赋 (CharacterTalentSystem)
+- **天赋树系统**: 多棵天赋树（攻击/防御/技能/元素专属）
+- **节点类型**: 属性/技能/被动/核心/特殊节点
+- **解锁条件**: 前置节点、等级、觉醒要求
+- **消耗系统**: 天赋点、金币、特殊材料
+- **天赋重置**: 24小时冷却，返还80%资源
+- **元素专属**: 火/水属性专属天赋树
+
+### 角色图鉴 (CharacterCollectionSystem)
+- **收集状态**: 未发现/已发现/拥有/精通
+- **收集统计**: 按稀有度/元素/职业分类统计
+- **收集奖励**: 15+个达成奖励（数量/稀有度/元素/职业/精通）
+- **角色语音**: 8种语音（自我介绍/战斗/技能/好感等）
+- **角色故事**: 5章故事（按好感度解锁）
+- **战斗记录**: 战斗次数/击杀/伤害统计
+- **精通系统**: 满级+满星+满觉醒+满好感度达成精通
 
 ### 队伍战斗 (TeamBattle)
 - 多角色跟随效果
@@ -695,6 +737,18 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 角色突破 | ✅ | CharacterUpgrade.ts |
 | 队伍战斗 | ✅ | TeamBattle.ts |
 | 角色死亡切换 | ✅ | TeamBattle.ts |
+| 好感度系统 | ✅ | CharacterAffinitySystem.ts |
+| 礼物系统 | ✅ | CharacterAffinitySystem.ts |
+| 互动系统 | ✅ | CharacterAffinitySystem.ts |
+| 羁绊系统 | ✅ | CharacterBondSystem.ts |
+| 羁绊效果计算 | ✅ | CharacterBondSystem.ts |
+| 天赋树系统 | ✅ | CharacterTalentSystem.ts |
+| 天赋节点解锁 | ✅ | CharacterTalentSystem.ts |
+| 天赋重置 | ✅ | CharacterTalentSystem.ts |
+| 角色图鉴 | ✅ | CharacterCollectionSystem.ts |
+| 图鉴奖励 | ✅ | CharacterCollectionSystem.ts |
+| 角色语音 | ✅ | CharacterCollectionSystem.ts |
+| 角色故事 | ✅ | CharacterCollectionSystem.ts |
 
 #### 技能系统
 | 功能 | 状态 | 文件 |

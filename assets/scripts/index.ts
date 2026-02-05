@@ -365,3 +365,50 @@ export type {
     SocketResult,
     GemCombineResult
 } from './EquipmentGemSystem';
+
+// 角色好感度系统
+export { CharacterAffinitySystem, AffinityLevel, GiftType, InteractionType } from './CharacterAffinitySystem';
+export type {
+    GiftConfig,
+    AffinityLevelConfig,
+    AffinityReward,
+    AffinityStatBonus,
+    CharacterAffinityData,
+    InteractionResult
+} from './CharacterAffinitySystem';
+
+// 角色羁绊系统
+export { CharacterBondSystem, BondType } from './CharacterBondSystem';
+export type {
+    BondCondition,
+    BondEffect,
+    BondConfig,
+    BondLevel,
+    ActiveBond,
+    TeamBondStatus
+} from './CharacterBondSystem';
+
+// 角色天赋系统
+export { CharacterTalentSystem, TalentNodeType, TalentNodeStatus } from './CharacterTalentSystem';
+export type {
+    TalentNodeEffect,
+    TalentNodeConfig,
+    TalentTreeConfig,
+    CharacterTalentData,
+    TalentUnlockResult,
+    TalentResetResult
+} from './CharacterTalentSystem';
+
+// 角色图鉴系统
+export { CharacterCollectionSystem, CollectionStatus } from './CharacterCollectionSystem';
+export type {
+    CollectionEntry,
+    CollectionReward,
+    CollectionCondition,
+    CollectionRewardItem,
+    CollectionStatistics,
+    CharacterVoice,
+    VoiceUnlockCondition,
+    CharacterStory,
+    StoryUnlockCondition
+} from './CharacterCollectionSystem';
