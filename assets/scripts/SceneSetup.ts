@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Vec2, Vec3, Prefab, instantiate, UITransform, Graphics, Color, Size } from 'cc';
+import { _decorator, Component, Node, Vec2, Vec3, Prefab, instantiate, UITransform, Graphics, Color, Size, Canvas, Camera, view } from 'cc';
 import { Wall, WallType } from './Wall';
 import { Flipper, FlipperSide } from './Flipper';
 import { DeadZone } from './DeadZone';
@@ -7,6 +7,8 @@ import { Enemy, EnemyType } from './Enemy';
 import { Character } from './Character';
 import { GameManager } from './GameManager';
 import { SkillSystem } from './SkillSystem';
+import { InputManager } from './InputManager';
+import { MobileUI } from './MobileUI';
 const { ccclass, property } = _decorator;
 
 /**
@@ -50,10 +52,20 @@ export class SceneSetup extends Component {
     @property({ tooltip: '弹射物数量' })
     public bumperCount: number = 3;
 
+    @property({ tooltip: '是否创建移动端UI' })
+    public createMobileUI: boolean = true;
+
+    @property({ tooltip: '是否显示触摸区域指示' })
+    public showTouchZones: boolean = true;
+
     private _wallContainer: Node | null = null;
     private _enemyContainer: Node | null = null;
     private _bumperContainer: Node | null = null;
     private _characterNode: Node | null = null;
+    private _leftFlipperNode: Node | null = null;
+    private _rightFlipperNode: Node | null = null;
+    private _inputManagerNode: Node | null = null;
+    private _mobileUINode: Node | null = null;
 
     onLoad() {
         if (this.autoSetup) {
@@ -65,7 +77,10 @@ export class SceneSetup extends Component {
      * 设置完整场景
      */
     public setupScene(): void {
-        console.log('开始创建游戏场景...');
+        console.log('开始创建游戏场景（移动端专用）...');
+
+        // 更新场景尺寸为设备尺寸
+        this.updateSceneSizeForMobile();
 
         // 创建容器节点
         this.createContainers();
@@ -75,6 +90,9 @@ export class SceneSetup extends Component {
 
         // 创建技能系统
         this.createSkillSystem();
+
+        // 创建输入管理器（移动端触摸控制）
+        this.createInputManager();
 
         // 创建墙壁边界
         this.createWalls();
@@ -94,7 +112,24 @@ export class SceneSetup extends Component {
         // 创建弹射障碍物
         this.createBumpers();
 
+        // 创建移动端UI
+        if (this.createMobileUI) {
+            this.createMobileUIPanel();
+        }
+
+        // 设置输入管理器的引用
+        this.setupInputManagerReferences();
+
         console.log('游戏场景创建完成！');
+    }
+
+    /**
+     * 更新场景尺寸以适应移动端
+     */
+    private updateSceneSizeForMobile(): void {
+        const visibleSize = view.getVisibleSize();
+        // 保持设计尺寸的比例，但可以根据实际屏幕调整
+        console.log(`设备屏幕尺寸: ${visibleSize.width}x${visibleSize.height}`);
     }
 
     /**
@@ -135,6 +170,62 @@ export class SceneSetup extends Component {
             const skillNode = new Node('SkillSystem');
             skillNode.addComponent(SkillSystem);
             this.node.addChild(skillNode);
+        }
+    }
+
+    /**
+     * 创建输入管理器（移动端触摸控制）
+     */
+    private createInputManager(): void {
+        const existing = this.node.getComponentInChildren(InputManager);
+        if (!existing) {
+            this._inputManagerNode = new Node('InputManager');
+            const inputManager = this._inputManagerNode.addComponent(InputManager);
+            
+            // 配置移动端触摸参数
+            inputManager.touchDivider = 0.5; // 屏幕中间分界
+            inputManager.flipperZoneHeight = 0.4; // 底部40%为挡板区域
+            inputManager.skillButtonRadius = 80; // 技能按钮半径
+            inputManager.skillButtonOffsetY = 150; // 技能按钮距底部距离
+            inputManager.vibrationEnabled = true; // 启用震动反馈
+            
+            this.node.addChild(this._inputManagerNode);
+        } else {
+            this._inputManagerNode = existing.node;
+        }
+    }
+
+    /**
+     * 创建移动端UI面板
+     */
+    private createMobileUIPanel(): void {
+        const existing = this.node.getComponentInChildren(MobileUI);
+        if (!existing) {
+            this._mobileUINode = new Node('MobileUI');
+            
+            // 添加UITransform
+            const uiTransform = this._mobileUINode.addComponent(UITransform);
+            uiTransform.setContentSize(this.sceneWidth, this.sceneHeight);
+            
+            const mobileUI = this._mobileUINode.addComponent(MobileUI);
+            mobileUI.showTouchZones = this.showTouchZones;
+            mobileUI.skillButtonSize = 120;
+            mobileUI.pauseButtonSize = 60;
+            
+            this.node.addChild(this._mobileUINode);
+        }
+    }
+
+    /**
+     * 设置输入管理器的引用
+     */
+    private setupInputManagerReferences(): void {
+        const inputManager = InputManager.instance;
+        if (inputManager && this._leftFlipperNode && this._rightFlipperNode) {
+            inputManager.setFlippers(this._leftFlipperNode, this._rightFlipperNode);
+        }
+        if (inputManager && this._characterNode) {
+            inputManager.setCharacter(this._characterNode);
         }
     }
 
@@ -241,14 +332,14 @@ export class SceneSetup extends Component {
         const flipperOffset = this.flipperGap / 2 + this.flipperWidth / 2;
 
         // 左挡板
-        const leftFlipper = this.createFlipper(
+        this._leftFlipperNode = this.createFlipper(
             'LeftFlipper',
             new Vec3(-flipperOffset, flipperY, 0),
             FlipperSide.LEFT
         );
 
         // 右挡板
-        const rightFlipper = this.createFlipper(
+        this._rightFlipperNode = this.createFlipper(
             'RightFlipper',
             new Vec3(flipperOffset, flipperY, 0),
             FlipperSide.RIGHT

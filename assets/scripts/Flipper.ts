@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Vec2, Vec3, RigidBody2D, BoxCollider2D, PolygonCollider2D, Collider2D, Contact2DType, IPhysics2DContact, ERigidBody2DType, input, Input, EventKeyboard, KeyCode, EventTouch, tween, Quat } from 'cc';
+import { _decorator, Component, Node, Vec2, Vec3, RigidBody2D, BoxCollider2D, PolygonCollider2D, Collider2D, Contact2DType, IPhysics2DContact, ERigidBody2DType, tween, Quat, Tween } from 'cc';
 import { Character } from './Character';
 const { ccclass, property } = _decorator;
 
@@ -11,8 +11,8 @@ export enum FlipperSide {
 }
 
 /**
- * 挡板类 - 底部的弹射挡板
- * Flipper class - Bottom paddle for bouncing the character
+ * 挡板类 - 底部的弹射挡板（移动端专用，由InputManager统一控制）
+ * Flipper class - Bottom paddle for bouncing the character (Mobile-only, controlled by InputManager)
  */
 @ccclass('Flipper')
 export class Flipper extends Component {
@@ -25,18 +25,41 @@ export class Flipper extends Component {
     @property({ tooltip: '挡板旋转角度' })
     public flipAngle: number = 45;
 
-    @property({ tooltip: '挡板旋转速度' })
-    public flipSpeed: number = 0.1;
+    @property({ tooltip: '挡板弹起速度(秒)' })
+    public flipUpSpeed: number = 0.08;
+
+    @property({ tooltip: '挡板回落速度(秒)' })
+    public flipDownSpeed: number = 0.15;
 
     @property({ tooltip: '自动挡板（是否自动弹射经过的角色）' })
     public autoFlip: boolean = false;
 
+    @property({ tooltip: '弹射时额外力度加成（正在弹起时碰撞）' })
+    public flipBonusForce: number = 1.5;
+
     private _isFlipping: boolean = false;
+    private _isUp: boolean = false;
     private _originalRotation: number = 0;
     private _targetRotation: number = 0;
     private _collider: BoxCollider2D | null = null;
-    private _leftKey: KeyCode = KeyCode.KEY_A;
-    private _rightKey: KeyCode = KeyCode.KEY_D;
+    private _currentTween: Tween<Node> | null = null;
+
+    // 弹射事件回调
+    private _onFlipCallback: ((side: FlipperSide) => void) | null = null;
+
+    /**
+     * 获取挡板是否处于弹起状态
+     */
+    public get isUp(): boolean {
+        return this._isUp;
+    }
+
+    /**
+     * 获取挡板是否正在移动中
+     */
+    public get isFlipping(): boolean {
+        return this._isFlipping;
+    }
 
     onLoad() {
         // 获取或添加碰撞器
@@ -51,7 +74,6 @@ export class Flipper extends Component {
         this._collider.apply();
 
         // 设置初始旋转角度
-        const euler = this.node.eulerAngles;
         if (this.side === FlipperSide.LEFT) {
             this._originalRotation = -20;
             this._targetRotation = this._originalRotation + this.flipAngle;
@@ -63,40 +85,36 @@ export class Flipper extends Component {
 
         // 注册碰撞回调
         this._collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
-
-        // 注册输入事件
-        input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
-        input.on(Input.EventType.KEY_UP, this.onKeyUp, this);
-        input.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
-        input.on(Input.EventType.TOUCH_END, this.onTouchEnd, this);
     }
 
     start() {
         console.log(`挡板初始化: ${this.side === FlipperSide.LEFT ? '左' : '右'}`);
     }
 
-    update(deltaTime: number) {
-        // 挡板旋转动画由tween处理
-    }
-
     /**
-     * 执行弹射动作
+     * 执行弹射动作（单次弹射）
      */
     public flip(): void {
         if (this._isFlipping) return;
 
+        this.stopCurrentTween();
         this._isFlipping = true;
         
         // 使用tween实现平滑旋转
-        tween(this.node)
-            .to(this.flipSpeed, { 
+        this._currentTween = tween(this.node)
+            .to(this.flipUpSpeed, { 
                 eulerAngles: new Vec3(0, 0, this._targetRotation) 
             })
-            .to(this.flipSpeed * 2, { 
+            .call(() => {
+                this._isUp = true;
+                this._onFlipCallback?.(this.side);
+            })
+            .to(this.flipDownSpeed, { 
                 eulerAngles: new Vec3(0, 0, this._originalRotation) 
             })
             .call(() => {
                 this._isFlipping = false;
+                this._isUp = false;
             })
             .start();
     }
@@ -105,11 +123,19 @@ export class Flipper extends Component {
      * 保持弹起状态
      */
     public flipUp(): void {
+        if (this._isUp && !this._isFlipping) return;
+        
+        this.stopCurrentTween();
         this._isFlipping = true;
         
-        tween(this.node)
-            .to(this.flipSpeed, { 
+        this._currentTween = tween(this.node)
+            .to(this.flipUpSpeed, { 
                 eulerAngles: new Vec3(0, 0, this._targetRotation) 
+            })
+            .call(() => {
+                this._isFlipping = false;
+                this._isUp = true;
+                this._onFlipCallback?.(this.side);
             })
             .start();
     }
@@ -118,14 +144,37 @@ export class Flipper extends Component {
      * 放下挡板
      */
     public flipDown(): void {
-        tween(this.node)
-            .to(this.flipSpeed * 2, { 
+        if (!this._isUp && !this._isFlipping) return;
+        
+        this.stopCurrentTween();
+        this._isFlipping = true;
+        
+        this._currentTween = tween(this.node)
+            .to(this.flipDownSpeed, { 
                 eulerAngles: new Vec3(0, 0, this._originalRotation) 
             })
             .call(() => {
                 this._isFlipping = false;
+                this._isUp = false;
             })
             .start();
+    }
+
+    /**
+     * 停止当前的tween动画
+     */
+    private stopCurrentTween(): void {
+        if (this._currentTween) {
+            this._currentTween.stop();
+            this._currentTween = null;
+        }
+    }
+
+    /**
+     * 设置弹射回调
+     */
+    public setFlipCallback(callback: (side: FlipperSide) => void): void {
+        this._onFlipCallback = callback;
     }
 
     /**
@@ -140,13 +189,25 @@ export class Flipper extends Component {
             
             // 计算弹射方向
             const flipDirection = this.getFlipDirection();
+            
+            // 如果挡板正在弹起中，给予额外力度加成
+            let forceMultiplier = 1.0;
+            if (this._isFlipping && !this._isUp) {
+                forceMultiplier = this.flipBonusForce;
+            }
+            
             const force = new Vec2(
-                flipDirection.x * this.flipForce,
-                flipDirection.y * this.flipForce
+                flipDirection.x * this.flipForce * forceMultiplier,
+                flipDirection.y * this.flipForce * forceMultiplier
             );
             
             character.applyFlipForce(force);
-            console.log(`挡板弹射！方向: (${flipDirection.x.toFixed(2)}, ${flipDirection.y.toFixed(2)})`);
+            
+            if (forceMultiplier > 1) {
+                console.log(`挡板弹射！(强力) 方向: (${flipDirection.x.toFixed(2)}, ${flipDirection.y.toFixed(2)})`);
+            } else {
+                console.log(`挡板弹射！方向: (${flipDirection.x.toFixed(2)}, ${flipDirection.y.toFixed(2)})`);
+            }
         }
     }
 
@@ -173,60 +234,40 @@ export class Flipper extends Component {
     }
 
     /**
-     * 键盘按下事件
+     * 获取当前旋转角度
      */
-    private onKeyDown(event: EventKeyboard): void {
-        if (this.side === FlipperSide.LEFT && 
-            (event.keyCode === this._leftKey || event.keyCode === KeyCode.ARROW_LEFT)) {
-            this.flipUp();
-        } else if (this.side === FlipperSide.RIGHT && 
-            (event.keyCode === this._rightKey || event.keyCode === KeyCode.ARROW_RIGHT)) {
-            this.flipUp();
-        }
+    public getCurrentRotation(): number {
+        return this.node.eulerAngles.z;
     }
 
     /**
-     * 键盘松开事件
+     * 获取弹起角度
      */
-    private onKeyUp(event: EventKeyboard): void {
-        if (this.side === FlipperSide.LEFT && 
-            (event.keyCode === this._leftKey || event.keyCode === KeyCode.ARROW_LEFT)) {
-            this.flipDown();
-        } else if (this.side === FlipperSide.RIGHT && 
-            (event.keyCode === this._rightKey || event.keyCode === KeyCode.ARROW_RIGHT)) {
-            this.flipDown();
-        }
+    public getTargetRotation(): number {
+        return this._targetRotation;
     }
 
     /**
-     * 触摸开始事件（移动端支持）
+     * 获取初始角度
      */
-    private onTouchStart(event: EventTouch): void {
-        const location = event.getUILocation();
-        const screenWidth = 960; // 假设屏幕宽度，实际应该从屏幕获取
-
-        // 屏幕左半边控制左挡板，右半边控制右挡板
-        if (this.side === FlipperSide.LEFT && location.x < screenWidth / 2) {
-            this.flipUp();
-        } else if (this.side === FlipperSide.RIGHT && location.x >= screenWidth / 2) {
-            this.flipUp();
-        }
+    public getOriginalRotation(): number {
+        return this._originalRotation;
     }
 
     /**
-     * 触摸结束事件
+     * 立即重置到初始状态
      */
-    private onTouchEnd(event: EventTouch): void {
-        this.flipDown();
+    public resetImmediate(): void {
+        this.stopCurrentTween();
+        this.node.setRotationFromEuler(0, 0, this._originalRotation);
+        this._isFlipping = false;
+        this._isUp = false;
     }
 
     onDestroy() {
+        this.stopCurrentTween();
         if (this._collider) {
             this._collider.off(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
         }
-        input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this);
-        input.off(Input.EventType.KEY_UP, this.onKeyUp, this);
-        input.off(Input.EventType.TOUCH_START, this.onTouchStart, this);
-        input.off(Input.EventType.TOUCH_END, this.onTouchEnd, this);
     }
 }

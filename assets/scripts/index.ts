@@ -10,7 +10,7 @@
 
 // 核心系统
 export { GameManager } from './GameManager';
-export { InputManager } from './InputManager';
+export { InputManager, TouchZone } from './InputManager';
 export { LevelManager } from './LevelManager';
 export { SkillSystem, SkillType, SkillTarget } from './SkillSystem';
 
@@ -25,6 +25,7 @@ export { DeadZone } from './DeadZone';
 // 场景和UI
 export { SceneSetup } from './SceneSetup';
 export { GameUI } from './GameUI';
+export { MobileUI } from './MobileUI';
 
 // 技能系统（独立技能池）
 export {
