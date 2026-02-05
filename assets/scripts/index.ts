@@ -224,3 +224,11 @@ export type {
 // 音频系统
 export { AudioManager, SFXType, BGMType } from './AudioManager';
 export type { AudioConfig } from './AudioManager';
+
+// 新手引导系统
+export { TutorialSystem, TutorialStepType, TutorialTrigger, DialogPosition } from './TutorialSystem';
+export type {
+    TutorialStep,
+    TutorialChapter,
+    TutorialProgress
+} from './TutorialSystem';

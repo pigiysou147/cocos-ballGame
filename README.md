@@ -824,16 +824,33 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 签到系统 | ✅ | DailyTaskSystem.ts |
 | 自动重置 | ✅ | DailyTaskSystem.ts |
 
+#### 音频系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| BGM管理 | ✅ | AudioManager.ts |
+| 音效管理 | ✅ | AudioManager.ts |
+| 音量控制 | ✅ | AudioManager.ts |
+| 淡入淡出 | ✅ | AudioManager.ts |
+| 音频缓存 | ✅ | AudioManager.ts |
+
+#### 新手引导系统
+| 功能 | 状态 | 文件 |
+|------|------|------|
+| 引导章节管理 | ✅ | TutorialSystem.ts |
+| 对话框引导 | ✅ | TutorialSystem.ts |
+| 高亮区域引导 | ✅ | TutorialSystem.ts |
+| 手势动画 | ✅ | TutorialSystem.ts |
+| 强制/自由模式 | ✅ | TutorialSystem.ts |
+| 引导进度保存 | ✅ | TutorialSystem.ts |
+| 跳过功能 | ✅ | TutorialSystem.ts |
+
 ### ⏳ 待实现功能
 
 | 功能 | 优先级 | 说明 |
 |------|--------|------|
 | 多人协作模式 | 中 | 多人联机弹射 |
-| 音效系统 | 高 | 碰撞/技能/UI音效 |
-| 背景音乐 | 高 | 场景BGM |
 | 公会系统 | 低 | 公会战和社交 |
 | 活动系统 | 低 | 限时活动关卡 |
-| 新手引导 | 高 | 教程流程 |
 | 设置面板 | 中 | 音量/画质设置 |
 | 抽卡动画 | 中 | 召唤演出效果 |
 | 剧情系统 | 低 | 主线/角色剧情 |
