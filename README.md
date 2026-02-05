@@ -718,8 +718,17 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 装备数据池 | ✅ | EquipmentData.ts |
 | 装备管理器 | ✅ | EquipmentManager.ts |
 | 装备穿戴 | ✅ | EquipmentManager.ts |
-| 装备强化 | ✅ | EquipmentManager.ts |
+| 装备强化 | ✅ | EquipmentEnhanceSystem.ts |
+| 装备分解 | ✅ | EquipmentEnhanceSystem.ts |
+| 装备洗练 | ✅ | EquipmentEnhanceSystem.ts |
+| 装备传承 | ✅ | EquipmentEnhanceSystem.ts |
 | 套装效果 | ✅ | EquipmentManager.ts |
+| 装备锻造 | ✅ | EquipmentForgeSystem.ts |
+| 装备合成 | ✅ | EquipmentForgeSystem.ts |
+| 锻造配方 | ✅ | EquipmentForgeSystem.ts |
+| 宝石镶嵌 | ✅ | EquipmentGemSystem.ts |
+| 宝石合成 | ✅ | EquipmentGemSystem.ts |
+| 宝石套装 | ✅ | EquipmentGemSystem.ts |
 
 #### 关卡系统
 | 功能 | 状态 | 文件 |

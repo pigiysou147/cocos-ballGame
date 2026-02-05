@@ -334,3 +334,34 @@ export type {
     ComboState,
     ComboTriggerResult
 } from './SkillComboSystem';
+
+// 装备强化系统
+export { EquipmentEnhanceSystem } from './EquipmentEnhanceSystem';
+export type {
+    EnhanceResult,
+    DecomposeResult,
+    DecomposeMaterial,
+    ReforgeResult,
+    InheritResult,
+    EnhanceProtection
+} from './EquipmentEnhanceSystem';
+
+// 装备锻造系统
+export { EquipmentForgeSystem } from './EquipmentForgeSystem';
+export type {
+    ForgeRecipe,
+    ForgeMaterial,
+    BonusDrop,
+    ForgeResult,
+    SynthesisRecipe
+} from './EquipmentForgeSystem';
+
+// 宝石镶嵌系统
+export { EquipmentGemSystem, GemType, GemGrade } from './EquipmentGemSystem';
+export type {
+    GemConfig,
+    GemInstance,
+    EquipmentGemSlots,
+    SocketResult,
+    GemCombineResult
+} from './EquipmentGemSystem';
