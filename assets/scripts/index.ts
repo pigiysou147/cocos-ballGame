@@ -561,3 +561,33 @@ export type {
     CharacterPassiveConfig,
     CharacterBounceConfig
 } from './CharacterData';
+
+// 武器魂珠系统（主武+魂珠）
+export { 
+    WeaponSoulOrbSystem, 
+    WeaponSourceType, 
+    WeaponRarity, 
+    WeaponPassiveType,
+    WeaponMaterialType 
+} from './WeaponSoulOrbSystem';
+export type {
+    WeaponPassiveConfig,
+    WeaponConfig,
+    SoulOrbConfig,
+    WeaponInstance,
+    SoulOrbInstance,
+    CharacterWeaponSlots,
+    MaterialInventory,
+    WeaponEnhanceResult,
+    WeaponAwakeningResult,
+    WeaponStatsResult
+} from './WeaponSoulOrbSystem';
+
+// 武器觉醒强化系统
+export { WeaponAwakeningSystem, EnhanceStage } from './WeaponAwakeningSystem';
+export type {
+    EnhanceMaterialRequirement,
+    AwakeningMaterialRequirement,
+    EnhanceConfig,
+    AwakeningConfig
+} from './WeaponAwakeningSystem';
