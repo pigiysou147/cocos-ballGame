@@ -441,3 +441,62 @@ export type {
     EnergyState,
     BattleStats
 } from './BattleCoreSystem';
+
+// 协力球系统
+export { CooperativeBallSystem, CoopBallType } from './CooperativeBallSystem';
+export type {
+    CoopBallConfig,
+    CoopBallInstance,
+    CoopBallSummonCondition
+} from './CooperativeBallSystem';
+
+// 复活系统
+export { RevivalSystem, RevivalState } from './RevivalSystem';
+export type {
+    DeathData,
+    RevivalConfig,
+    RevivalResult
+} from './RevivalSystem';
+
+// 技能链系统（CHAIN）
+export { SkillChainSystem, ChainEffectType } from './SkillChainSystem';
+export type {
+    ChainEffectConfig,
+    ChainState,
+    ChainTriggerRecord
+} from './SkillChainSystem';
+
+// 特性系统（贯通/浮游/加速等）
+export { TraitSystem, TraitType, TraitTrigger } from './TraitSystem';
+export type {
+    TraitConfig,
+    TraitInstance,
+    TraitEffectResult,
+    CharacterTraitData
+} from './TraitSystem';
+
+// 能力伤害系统（被动触发）
+export { AbilityDamageSystem, AbilityTriggerType, AbilityDamageType } from './AbilityDamageSystem';
+export type {
+    AbilityConfig,
+    AbilityInstance,
+    AbilityDamageResult
+} from './AbilityDamageSystem';
+
+// 弱点与能量系统
+export { WeakPointEnergySystem, WeakPointType, WeakPointState, EnergySource } from './WeakPointEnergySystem';
+export type {
+    WeakPointConfig,
+    WeakPointInstance,
+    EnergyGainConfig,
+    EnergyGainRecord
+} from './WeakPointEnergySystem';
+
+// 技能升级系统（扩展：一板/二板）
+export { SkillPanelType } from './SkillUpgradeSystem';
+export type {
+    SkillPanelData,
+    StarMaterialData,
+    ElementMaterialData,
+    BossMaterialData
+} from './SkillUpgradeSystem';
