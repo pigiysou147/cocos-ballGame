@@ -418,3 +418,26 @@ export { SkillEffectRenderer, SkillVFXType } from './SkillEffectRenderer';
 export type {
     SkillVFXConfig
 } from './SkillEffectRenderer';
+
+// 编队系统（3主3副 + 武器魂珠）
+export { FormationSystem, SlotType, SoulOrbType, SoulOrbEffectType } from './FormationSystem';
+export type {
+    SoulOrbConfig,
+    SoulOrbEffect,
+    SoulOrbInstance,
+    MainSlotData,
+    SubSlotData,
+    FormationData,
+    FormationCharacterState,
+    FormationBonuses
+} from './FormationSystem';
+
+// 战斗核心系统（Fever/冲刺/PF/技能）
+export { BattleCoreSystem, DamageSystemType, PowerFlipLevel, BattleState } from './BattleCoreSystem';
+export type {
+    DashState,
+    FeverState,
+    ComboState,
+    EnergyState,
+    BattleStats
+} from './BattleCoreSystem';
