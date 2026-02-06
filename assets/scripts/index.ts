@@ -500,3 +500,12 @@ export type {
     ElementMaterialData,
     BossMaterialData
 } from './SkillUpgradeSystem';
+
+// 能量循环系统
+export { EnergySystem, EnergySourceType, EnergyEfficiency } from './EnergySystem';
+export type {
+    EnergySourceConfig,
+    CharacterEnergyPassive,
+    FormationEnergyData,
+    EnergyGainRecord
+} from './EnergySystem';
