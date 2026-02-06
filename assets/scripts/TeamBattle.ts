@@ -537,27 +537,85 @@ export class TeamBattle extends Component {
     }
 
     /**
-     * 使用队伍技能
+     * 使用队伍技能（释放队长的主动技能）
+     * 在《世界弹射物语》中，队伍技能 = 队长角色的主动技能
      */
     public useTeamSkill(): boolean {
         if (this._isUsingSkill) return false;
 
-        // 检查所有角色是否有技能可用
-        let skillUsed = false;
+        // 只使用队长的主动技能
+        const leaderData = this._characterData[this._leaderIndex];
+        if (!leaderData) return false;
 
-        for (let i = 0; i < this._characterData.length; i++) {
-            const data = this._characterData[i];
-            if (data.currentHP <= 0) continue;
-            if (this._skillCooldowns[i] > 0) continue;
-            if (!data.activeSkill) continue;
-            if (data.skillEnergy < data.activeSkill.baseEnergyCost) continue;
-
-            // 使用技能
-            this.executeSkill(i);
-            skillUsed = true;
+        // 检查队长是否存活
+        if (leaderData.currentHP <= 0) {
+            console.log('队长已阵亡，无法释放技能');
+            return false;
         }
 
-        return skillUsed;
+        // 检查冷却
+        if (this._skillCooldowns[this._leaderIndex] > 0) {
+            console.log(`技能冷却中 (${this._skillCooldowns[this._leaderIndex].toFixed(1)}s)`);
+            return false;
+        }
+
+        // 检查是否有主动技能
+        if (!leaderData.activeSkill) {
+            console.log('队长没有装备主动技能');
+            return false;
+        }
+
+        // 检查能量是否足够
+        if (leaderData.skillEnergy < leaderData.activeSkill.baseEnergyCost) {
+            console.log(`能量不足 (${leaderData.skillEnergy}/${leaderData.activeSkill.baseEnergyCost})`);
+            return false;
+        }
+
+        // 释放队长的主动技能
+        this.executeSkill(this._leaderIndex);
+        return true;
+    }
+
+    /**
+     * 检查队伍技能是否可用
+     */
+    public canUseTeamSkill(): boolean {
+        if (this._isUsingSkill) return false;
+
+        const leaderData = this._characterData[this._leaderIndex];
+        if (!leaderData) return false;
+        if (leaderData.currentHP <= 0) return false;
+        if (this._skillCooldowns[this._leaderIndex] > 0) return false;
+        if (!leaderData.activeSkill) return false;
+        if (leaderData.skillEnergy < leaderData.activeSkill.baseEnergyCost) return false;
+
+        return true;
+    }
+
+    /**
+     * 获取队伍技能信息（队长的主动技能）
+     */
+    public getTeamSkillInfo(): {
+        skill: SkillConfig | null;
+        energyPercent: number;
+        cooldown: number;
+        canUse: boolean;
+    } {
+        const leaderData = this._characterData[this._leaderIndex];
+        if (!leaderData || !leaderData.activeSkill) {
+            return { skill: null, energyPercent: 0, cooldown: 0, canUse: false };
+        }
+
+        const maxEnergy = leaderData.activeSkill.baseEnergyCost;
+        const energyPercent = maxEnergy > 0 ? leaderData.skillEnergy / maxEnergy : 0;
+        const cooldown = this._skillCooldowns[this._leaderIndex] || 0;
+
+        return {
+            skill: leaderData.activeSkill,
+            energyPercent: Math.min(1, energyPercent),
+            cooldown,
+            canUse: this.canUseTeamSkill()
+        };
     }
 
     /**
@@ -710,17 +768,26 @@ export class TeamBattle extends Component {
     }
 
     /**
-     * 给队伍增加能量
+     * 给队伍增加能量（主要给队长累积，因为释放的是队长技能）
      */
     public addTeamEnergy(amount: number): void {
-        for (const data of this._characterData) {
-            if (data.currentHP > 0) {
-                data.skillEnergy = Math.min(
-                    data.skillEnergy + amount,
-                    data.config.skill.energyCost
-                );
-            }
-        }
+        const leaderData = this._characterData[this._leaderIndex];
+        if (!leaderData || leaderData.currentHP <= 0) return;
+
+        // 主要给队长增加能量
+        const maxEnergy = leaderData.activeSkill?.baseEnergyCost || 100;
+        leaderData.skillEnergy = Math.min(leaderData.skillEnergy + amount, maxEnergy);
+    }
+
+    /**
+     * 给指定角色增加能量
+     */
+    public addCharacterEnergy(characterIndex: number, amount: number): void {
+        const data = this._characterData[characterIndex];
+        if (!data || data.currentHP <= 0) return;
+
+        const maxEnergy = data.activeSkill?.baseEnergyCost || 100;
+        data.skillEnergy = Math.min(data.skillEnergy + amount, maxEnergy);
     }
 
     /**
@@ -860,19 +927,14 @@ export class TeamBattle extends Component {
     }
 
     /**
-     * 获取队伍技能能量百分比
+     * 获取队伍技能能量百分比（队长的能量）
      */
     public getTeamEnergyPercent(): number {
-        let totalEnergy = 0;
-        let totalMaxEnergy = 0;
+        const leaderData = this._characterData[this._leaderIndex];
+        if (!leaderData || !leaderData.activeSkill) return 0;
 
-        for (const data of this._characterData) {
-            totalEnergy += data.skillEnergy;
-            const maxEnergy = data.activeSkill?.baseEnergyCost || 100;
-            totalMaxEnergy += maxEnergy;
-        }
-
-        return totalMaxEnergy > 0 ? totalEnergy / totalMaxEnergy : 0;
+        const maxEnergy = leaderData.activeSkill.baseEnergyCost;
+        return maxEnergy > 0 ? Math.min(1, leaderData.skillEnergy / maxEnergy) : 0;
     }
 
     /**

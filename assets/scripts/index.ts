@@ -412,3 +412,182 @@ export type {
     CharacterStory,
     StoryUnlockCondition
 } from './CharacterCollectionSystem';
+
+// 技能特效渲染器
+export { SkillEffectRenderer, SkillVFXType } from './SkillEffectRenderer';
+export type {
+    SkillVFXConfig
+} from './SkillEffectRenderer';
+
+// 编队系统（3主3副 + 武器魂珠）
+export { FormationSystem, SlotType, SoulOrbType, SoulOrbEffectType } from './FormationSystem';
+export type {
+    SoulOrbConfig,
+    SoulOrbEffect,
+    SoulOrbInstance,
+    MainSlotData,
+    SubSlotData,
+    FormationData,
+    FormationCharacterState,
+    FormationBonuses
+} from './FormationSystem';
+
+// 战斗核心系统（Fever/冲刺/PF/技能）
+export { BattleCoreSystem, DamageSystemType, PowerFlipLevel, BattleState } from './BattleCoreSystem';
+export type {
+    DashState,
+    FeverState,
+    ComboState,
+    EnergyState,
+    BattleStats
+} from './BattleCoreSystem';
+
+// 协力球系统
+export { CooperativeBallSystem, CoopBallType } from './CooperativeBallSystem';
+export type {
+    CoopBallConfig,
+    CoopBallInstance,
+    CoopBallSummonCondition
+} from './CooperativeBallSystem';
+
+// 复活系统
+export { RevivalSystem, RevivalState } from './RevivalSystem';
+export type {
+    DeathData,
+    RevivalConfig,
+    RevivalResult
+} from './RevivalSystem';
+
+// 技能链系统（CHAIN）
+export { SkillChainSystem, ChainEffectType } from './SkillChainSystem';
+export type {
+    ChainEffectConfig,
+    ChainState,
+    ChainTriggerRecord
+} from './SkillChainSystem';
+
+// 特性系统（贯通/浮游/加速等）
+export { TraitSystem, TraitType, TraitTrigger } from './TraitSystem';
+export type {
+    TraitConfig,
+    TraitInstance,
+    TraitEffectResult,
+    CharacterTraitData
+} from './TraitSystem';
+
+// 能力伤害系统（被动触发）
+export { AbilityDamageSystem, AbilityTriggerType, AbilityDamageType } from './AbilityDamageSystem';
+export type {
+    AbilityConfig,
+    AbilityInstance,
+    AbilityDamageResult
+} from './AbilityDamageSystem';
+
+// 弱点与能量系统
+export { WeakPointEnergySystem, WeakPointType, WeakPointState, EnergySource } from './WeakPointEnergySystem';
+export type {
+    WeakPointConfig,
+    WeakPointInstance,
+    EnergyGainConfig,
+    EnergyGainRecord
+} from './WeakPointEnergySystem';
+
+// 技能升级系统（扩展：一板/二板）
+export { SkillPanelType } from './SkillUpgradeSystem';
+export type {
+    SkillPanelData,
+    StarMaterialData,
+    ElementMaterialData,
+    BossMaterialData
+} from './SkillUpgradeSystem';
+
+// 能量循环系统
+export { EnergySystem, EnergySourceType, EnergyEfficiency } from './EnergySystem';
+export type {
+    EnergySourceConfig,
+    CharacterEnergyPassive,
+    FormationEnergyData,
+    EnergyGainRecord
+} from './EnergySystem';
+
+// 角色特色系统（类型/定位/弹射特性）
+export { 
+    CharacterFeatureSystem, 
+    CharacterType, 
+    CharacterRole, 
+    PassiveMarkType, 
+    BounceType,
+    PassiveTriggerCondition,
+    PassiveEffectType
+} from './CharacterFeatureSystem';
+export type {
+    CharacterTypeConfig,
+    CharacterRoleConfig,
+    PassiveSkillConfig,
+    ElementTendencyConfig
+} from './CharacterFeatureSystem';
+
+// 队长技能系统
+export { LeaderSkillSystem, LeaderSkillType, LeaderConditionType } from './LeaderSkillSystem';
+export type {
+    LeaderSkillEffect,
+    LeaderSkillCondition,
+    LeaderSkillConfig,
+    LeaderSkillRuntimeData,
+    TeamLeaderBonus
+} from './LeaderSkillSystem';
+
+// 角色被动系统（M标识/触发机制）
+export { CharacterPassiveSystem } from './CharacterPassiveSystem';
+export type {
+    PassiveEffectInstance,
+    PassiveTriggerContext,
+    PassiveCalculationResult,
+    SummonConfig
+} from './CharacterPassiveSystem';
+
+// 流派适配系统（技伤/PF/直击/Fever）
+export { BuildArchetypeSystem, BuildArchetype } from './BuildArchetypeSystem';
+export type {
+    BuildArchetypeConfig,
+    TeamBuildData,
+    ArchetypeScoreResult,
+    TeamArchetypeAnalysis,
+    BuildOptimizationSuggestion
+} from './BuildArchetypeSystem';
+
+// 更新角色数据导出（新增类型和接口）
+export type {
+    CharacterPassiveConfig,
+    CharacterBounceConfig
+} from './CharacterData';
+
+// 武器魂珠系统（主武+魂珠）
+export { 
+    WeaponSoulOrbSystem, 
+    WeaponSourceType, 
+    WeaponRarity, 
+    WeaponPassiveType,
+    WeaponMaterialType 
+} from './WeaponSoulOrbSystem';
+export type {
+    WeaponPassiveConfig,
+    WeaponConfig,
+    SoulOrbConfig,
+    WeaponInstance,
+    SoulOrbInstance,
+    CharacterWeaponSlots,
+    MaterialInventory,
+    WeaponEnhanceResult,
+    WeaponAwakeningResult,
+    WeaponStatsResult
+} from './WeaponSoulOrbSystem';
+
+// 武器觉醒强化系统
+export { WeaponAwakeningSystem, EnhanceStage } from './WeaponAwakeningSystem';
+export type {
+    EnhanceMaterialRequirement,
+    AwakeningMaterialRequirement,
+    EnhanceConfig,
+    AwakeningConfig
+} from './WeaponAwakeningSystem';
