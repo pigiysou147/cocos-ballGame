@@ -305,6 +305,16 @@ this._levelDatabase.set(newId, {
 - 支持根据ID/类型/元素/标签查询
 - 自动计算技能等级成长
 
+### 技能特效渲染 (SkillEffectRenderer)
+- **释放特效**: 魔法阵、爆发粒子、蓄力效果
+- **命中特效**: 冲击波、斩击、爆炸
+- **区域特效**: 圆形/扇形/线性范围
+- **状态特效**: 增益光环、减益标记、护盾气泡
+- **治疗特效**: 上升粒子、治疗光环
+- **元素特效**: 火/水/风/雷/光/暗各有专属颜色
+- **屏幕效果**: 闪烁、震动
+- **粒子系统**: 对象池管理、自动回收
+
 ### 角色技能配置
 ```typescript
 // 角色通过ID引用技能池
@@ -765,6 +775,7 @@ cm.events.on(CurrencyManager.EVENT_CURRENCY_CHANGED, (data) => {
 | 冷却管理 | ✅ | SkillExecutor.ts |
 | 能量管理 | ✅ | SkillExecutor.ts |
 | 技能书系统 | ✅ | SkillUpgradeSystem.ts |
+| 技能特效渲染 | ✅ | SkillEffectRenderer.ts |
 
 #### 装备系统
 | 功能 | 状态 | 文件 |

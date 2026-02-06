@@ -412,3 +412,9 @@ export type {
     CharacterStory,
     StoryUnlockCondition
 } from './CharacterCollectionSystem';
+
+// 技能特效渲染器
+export { SkillEffectRenderer, SkillVFXType } from './SkillEffectRenderer';
+export type {
+    SkillVFXConfig
+} from './SkillEffectRenderer';
