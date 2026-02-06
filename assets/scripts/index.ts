@@ -509,3 +509,55 @@ export type {
     FormationEnergyData,
     EnergyGainRecord
 } from './EnergySystem';
+
+// 角色特色系统（类型/定位/弹射特性）
+export { 
+    CharacterFeatureSystem, 
+    CharacterType, 
+    CharacterRole, 
+    PassiveMarkType, 
+    BounceType,
+    PassiveTriggerCondition,
+    PassiveEffectType
+} from './CharacterFeatureSystem';
+export type {
+    CharacterTypeConfig,
+    CharacterRoleConfig,
+    PassiveSkillConfig,
+    ElementTendencyConfig
+} from './CharacterFeatureSystem';
+
+// 队长技能系统
+export { LeaderSkillSystem, LeaderSkillType, LeaderConditionType } from './LeaderSkillSystem';
+export type {
+    LeaderSkillEffect,
+    LeaderSkillCondition,
+    LeaderSkillConfig,
+    LeaderSkillRuntimeData,
+    TeamLeaderBonus
+} from './LeaderSkillSystem';
+
+// 角色被动系统（M标识/触发机制）
+export { CharacterPassiveSystem } from './CharacterPassiveSystem';
+export type {
+    PassiveEffectInstance,
+    PassiveTriggerContext,
+    PassiveCalculationResult,
+    SummonConfig
+} from './CharacterPassiveSystem';
+
+// 流派适配系统（技伤/PF/直击/Fever）
+export { BuildArchetypeSystem, BuildArchetype } from './BuildArchetypeSystem';
+export type {
+    BuildArchetypeConfig,
+    TeamBuildData,
+    ArchetypeScoreResult,
+    TeamArchetypeAnalysis,
+    BuildOptimizationSuggestion
+} from './BuildArchetypeSystem';
+
+// 更新角色数据导出（新增类型和接口）
+export type {
+    CharacterPassiveConfig,
+    CharacterBounceConfig
+} from './CharacterData';
